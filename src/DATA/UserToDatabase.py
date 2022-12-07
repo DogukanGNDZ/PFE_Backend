@@ -1,19 +1,28 @@
-from py2neo import Graph
-from src.DTO.UserDTO import *
-import configparser
+from neo4j import GraphDatabase
+from src.dto.UserDTO import *
+import os
+from dotenv import load_dotenv
+from dataclasses import asdict
 
-# Create a ConfigParser object
-config = configparser.ConfigParser()
+load_dotenv()
+host=os.getenv("HOST")
+user=os.getenv("USER")
+password=os.getenv("PWD")
 
-# Read the contents of the properties file
-config.read('prop.ini')
 # Connect to the database
-graph = Graph(host=config['DEFAULT']['neo4j.host'], user=config['DEFAULT']['neo4j.user'], password=config['DEFAULT']['neo4j.pwd'])
-
+graph = GraphDatabase.driver(host, auth=(user, password))
 
 def create_user(user_dto: UserDTO):
-    # Create the new user in the Neo4j database
-    result = graph.run('CREATE (u:User $user_properties) RETURN u', user_properties=user_dto.to_dict())
+    with graph.session() as session:
+        # Create the new user in the Neo4j database
+        result = session.run('CREATE (u:User $user_properties) RETURN u', user_properties=asdict(user_dto))
 
-    # Return the result of the query
-    return result
+        for row in result:
+            return row["u"]["id"]
+
+        # user = row.items()
+
+        # print(user)
+
+        # Return the result of the query
+        return result

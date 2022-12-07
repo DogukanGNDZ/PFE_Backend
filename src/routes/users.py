@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
-from src.DTO.UserDTO import *
+from src.dto.UserDTO import *
+from src.data.UserToDatabase import *
 import uuid
 import bcrypt
 
@@ -21,11 +22,12 @@ def generate_id():
 def register():
     # Get the values from the request
 
-    password = request.form.get('password')
-    byte_pwd = password.encode('utf-8')
+    password = request.json.get('password')
+    byte_pwd = password.encode('UTF-8')
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())  # hashed pwd
-    age = request.form.get('age')
-    firstname = request.form.get('firstname')
-    lastname = request.form.get('lastname')
-    email = request.form.get('email')
+    age = request.json.get('age')
+    firstname = request.json.get('firstname')
+    lastname = request.json.get('lastname')
+    email = request.json.get('email')
     user = UserDTO(generate_id(), firstname, lastname, age, email, pwd_hash)
+    return create_user(user)
