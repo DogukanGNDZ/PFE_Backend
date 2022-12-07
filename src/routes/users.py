@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, request
+from flask_cors import cross_origin
+
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
 import uuid
@@ -21,6 +23,7 @@ def generate_id():
 
 
 @users_bp.route("/register", methods=["POST"])
+@cross_origin()
 def register():
     # Get the values from the request
 
