@@ -6,7 +6,7 @@ import configparser
 config = configparser.ConfigParser()
 
 # Read the contents of the properties file
-config.read('properties.ini')
+config.read('prop.ini')
 # Connect to the database
 graph = Graph(host=config['DEFAULT']['neo4j.host'], user=config['DEFAULT']['neo4j.user'], password=config['DEFAULT']['neo4j.pwd'])
 
