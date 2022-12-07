@@ -17,12 +17,10 @@ def create_user(user_dto: UserDTO):
         # Create the new user in the Neo4j database
         result = session.run('CREATE (u:User $user_properties) RETURN u', user_properties=asdict(user_dto))
 
-        for row in result:
-            return row["u"]["id"]
+        user = result.single().data()['u']
+        user.pop('password', None)
 
-        # user = row.items()
-
-        # print(user)
+        print(user)
 
         # Return the result of the query
-        return result
+        return user
