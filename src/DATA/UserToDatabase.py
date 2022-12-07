@@ -1,7 +1,14 @@
 from py2neo import Graph
 from src.DTO.UserDTO import *
+import configparser
 
-graph = Graph(host='localhost', user='neo4j', password='password')
+# Create a ConfigParser object
+config = configparser.ConfigParser()
+
+# Read the contents of the properties file
+config.read('properties.ini')
+# Connect to the database
+graph = Graph(host=config['DEFAULT']['neo4j.host'], user=config['DEFAULT']['neo4j.user'], password=config['DEFAULT']['neo4j.pwd'])
 
 
 def create_user(user_dto: UserDTO):
