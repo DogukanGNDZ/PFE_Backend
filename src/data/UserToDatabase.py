@@ -9,7 +9,6 @@ host = os.getenv("HOST")
 user = os.getenv("USER")
 password = os.getenv("AUTH")
 
-
 # Connect to the database
 graph = GraphDatabase.driver(host, auth=(user, password))
 
@@ -25,16 +24,18 @@ def create_user(user_dto: UserDTO):
         # Return the result of the query
         return user
 
+
 def fetch_user(id: str):
     with graph.session() as session:
-        result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id = id)
-        
+        result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
+
         user = result.single().data()['u']
         user.pop('password', None)
 
         # Return the result of the query
         return user
-        
+
+
 def fetch_all_users():
     with graph.session() as session:
         result = session.run('MATCH (u:User) RETURN u')
