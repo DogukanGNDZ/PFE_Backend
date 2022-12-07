@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
 from src.DTO.UserDTO import *
-from src.DATA.UserToDatabase import *
 import uuid
 import bcrypt
 
@@ -30,4 +29,3 @@ def register():
     lastname = request.form.get('lastname')
     email = request.form.get('email')
     user = UserDTO(generate_id(), firstname, lastname, age, email, pwd_hash)
-    create_user(user)
