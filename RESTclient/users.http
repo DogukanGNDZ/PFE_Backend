@@ -1,0 +1,11 @@
+###
+POST http://localhost:5000/users/register
+Content-Type: application/json
+
+{
+    "lastname" : "marti",
+    "firstname" : "jean",
+    "email" : "jeabn@matrix.com",
+    "password" : "yayaya",
+    "age" : 16
+}
