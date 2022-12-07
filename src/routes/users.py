@@ -21,8 +21,13 @@ def generate_id():
 @users_bp.route("/register", methods=["POST"])
 def register():
     # Get the values from the request
-
+    print("aaaaaaaaaaaaaaaaaaaaaa")
     password = request.json.get('password')
+    if (password is not None):
+        print("y a pas rien")
+    else:
+        print("y a rien")
+    print(password)
     byte_pwd = password.encode('UTF-8')
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())  # hashed pwd
     age = request.json.get('age')
