@@ -83,6 +83,5 @@ stages:
             displayName: 'Deploy Azure Web App : pfeBackRecruit'
             inputs:
               azureSubscription: $(azureServiceConnectionId)
-              appType: 'webAppLinux'
               appName: $(webAppName)
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
