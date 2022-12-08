@@ -17,6 +17,7 @@ def get_all_users():
     return fetch_user(id)
 
 
+
 # generate a new id
 def generate_id():
     return str(uuid.uuid4())
