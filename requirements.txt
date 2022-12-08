@@ -1,5 +1,4 @@
 Flask==2.2.2
-flask_cors
 neo4j==5.3.0
 python-dotenv==0.21.0
 bcrypt==4.0.1

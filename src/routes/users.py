@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, make_response
-from flask_cors import cross_origin
+#from flask_cors import cross_origin
 
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
@@ -23,7 +23,7 @@ def generate_id():
 
 
 @users_bp.route("/register", methods=["POST"])
-@cross_origin()
+#@cross_origin()
 def register():
     # Get the values from the request
 
@@ -40,7 +40,7 @@ def register():
 
 
 @users_bp.route("/login", methods=["POST"])
-@cross_origin()
+#@cross_origin()
 def login():
     password = request.json.get('password')
     byte_pwd = password.encode('UTF-8')
