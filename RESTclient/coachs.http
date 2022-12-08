@@ -1,0 +1,14 @@
+###
+POST http://localhost:5000/coachs/register
+Content-Type: application/json
+
+{
+    "lastname" : "marti",
+    "firstname" : "jean",
+    "email" : "jean@matrix.com",
+    "password" : "yayaya",
+    "age" : 16
+}
+
+###
+GET http://localhost:5000/coachs

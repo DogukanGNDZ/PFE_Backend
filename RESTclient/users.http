@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "lastname" : "marti",
     "firstname" : "jean",
-    "email" : "jeabn@matrix.com",
+    "email" : "jebn@matrix.com",
     "password" : "yayaya",
     "age" : 16
 }
@@ -17,6 +17,15 @@ Content-Type: application/json
 {
     "email": "jeabn@matrix.com",
     "password" : "yayaya"
+}
+
+###
+POST http://localhost:5000/users/login
+Content-Type: application/json
+
+{
+    "email": "jeab@matrix.com",
+    "password" : "marti"
 }
 
 ###

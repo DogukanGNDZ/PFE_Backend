@@ -1,9 +1,11 @@
 from neo4j import GraphDatabase
+from flask import make_response
 from src.dto.UserDTO import *
 import os
 import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
+
 
 load_dotenv()
 host = os.getenv("HOST")
@@ -42,12 +44,28 @@ def check_user(password: str, email: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email RETURN u LIMIT 1', email=email)
-
         for row in result:
             if (bcrypt.checkpw(password, row['u']['password'])):
                 return True
             else:
                 return False
+
+        result = session.run(
+            'MATCH (c:Club) WHERE c.email = $email RETURN c LIMIT 1', email=email)
+        for row in result:
+            if (bcrypt.checkpw(password, row['c']['password'])):
+                return True
+            else:
+                return False
+
+        result = session.run(
+            'MATCH (co:Coach) WHERE co.email = $email RETURN co LIMIT 1', email=email)
+        for row in result:
+            if (bcrypt.checkpw(password, row['co']['password'])):
+                return True
+            else:
+                return False
+        return False
 
 
 def fetch_all_users():
