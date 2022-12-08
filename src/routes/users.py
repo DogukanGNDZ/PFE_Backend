@@ -44,9 +44,9 @@ def login():
     password = request.json.get('password')
     byte_pwd = password.encode('UTF-8')
     email = request.json.get('email')
-    if check_user(email, byte_pwd):
-        response = make_response(200)
-        return response
+    if check_user(byte_pwd, email):
+        print("work")
+        return "login successful"
     else:
         response = make_response("Wrong password", 400)
         return response

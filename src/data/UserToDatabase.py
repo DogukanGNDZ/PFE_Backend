@@ -41,16 +41,13 @@ def fetch_user(id: str):
 def check_user(password: str, email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email RETURN u', email=email
-        )
-        print(result)
-        user = result.single().data()['u']['password']
-        print(user)
-        print("le user est là")
-        if bcrypt.checkpw(password, user):
-            return True
-        else:
-            return False
+            'MATCH (u:User) WHERE u.email = $email RETURN u LIMIT 1', email=email)
+
+        for row in result:
+            if (bcrypt.checkpw(password, row['u']['password'])):
+                return True
+            else:
+                return False
 
 
 def fetch_all_users():
