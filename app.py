@@ -1,10 +1,10 @@
 from flask import Flask
 from src import create_app
-#from flask_cors import CORS
+from flask_cors import CORS
 
 app = create_app()
 
-#cors = CORS(app, resources={r'/api/*': {"origins": "*"}})
+cors = CORS(app, resources={r'/api/*': {"origins": "*"}})
 
 
 @app.route('/')
