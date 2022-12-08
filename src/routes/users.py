@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
 import uuid
@@ -31,3 +31,16 @@ def register():
     email = request.json.get('email')
     user = UserDTO(generate_id(), firstname, lastname, age, email, pwd_hash)
     return create_user(user)
+
+
+@users_bp.route("/login", methods=["POST"])
+def login():
+    password = request.json.get('password')
+    byte_pwd = password.encode('UTF-8')
+    email = request.json.get('email')
+    if check_user(email, byte_pwd):
+        response = make_response(200)
+        return response
+    else:
+        response = make_response("Wrong password", 400)
+        return response

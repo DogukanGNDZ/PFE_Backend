@@ -1,6 +1,7 @@
 from neo4j import GraphDatabase
 from src.dto.UserDTO import *
 import os
+import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -27,3 +28,16 @@ def create_user(user_dto: UserDTO):
 
         # Return the result of the query
         return user
+
+
+def check_user(password: str, email: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (u:User) WHERE u.email = $email RETURN u.password', email=asdict(email)
+        )
+
+        user = result.single().data()['u']['password']
+        if bcrypt.checkpw(password, user):
+            return True
+        else:
+            return False

@@ -9,3 +9,12 @@ Content-Type: application/json
     "password" : "yayaya",
     "age" : 16
 }
+
+###
+POST http://localhost:5000/users/login
+Content-Type: application/application/json
+
+{
+    "email": "jeabn@matrix.com",
+    "password" : "yayaya"
+}
