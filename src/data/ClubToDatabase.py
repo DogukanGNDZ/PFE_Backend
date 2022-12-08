@@ -32,7 +32,7 @@ def fetch_club(id: str):
     with graph.session() as session:
         result = session.run('MATCH (c:Club) WHERE c.id = $id RETURN c', id=id)
 
-        club = result.single().data()['u']
+        club = result.single().data()['c']
         club.pop('password', None)
 
         # Return the result of the query

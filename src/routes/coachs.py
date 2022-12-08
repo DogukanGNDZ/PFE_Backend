@@ -35,5 +35,6 @@ def register():
     firstname = request.json.get('firstname')
     lastname = request.json.get('lastname')
     email = request.json.get('email')
-    coach = CoachDTO(generate_id(), firstname, lastname, age, email, pwd_hash)
+    coach = CoachDTO(generate_id(), firstname, lastname,
+                     age, email, pwd_hash, 0, "", "")
     return create_coach(coach)

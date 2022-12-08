@@ -5,6 +5,7 @@ from src.dto.ClubDTO import *
 from src.data.ClubToDatabase import *
 import uuid
 import bcrypt
+import datetime
 
 clubs_bp = Blueprint("clubs", __name__, url_prefix="/clubs")
 
@@ -32,5 +33,6 @@ def register():
     name = request.json.get('name')
     email = request.json.get('email')
     id_manager = request.json.get('id_manager')
-    club = ClubDTO(generate_id(), name, email, pwd_hash, id_manager)
+    club = ClubDTO(generate_id(), name, email, pwd_hash,
+                   "", 0, datetime.datetime.now(), "")
     return create_club(club)
