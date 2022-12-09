@@ -51,3 +51,22 @@ def login():
     else:
         response = make_response("Wrong password", 400)
         return response
+
+
+@users_bp.route("/update", methods=["PUT"])
+@cross_origin()
+def update_data_user():
+    firstname = request.json.get('firstname')
+    lastname = request.json.get('lastname')
+    email = request.json.get('email')
+    age = request.json.get('age')
+    size = request.json.get('size')
+    weight = request.json.get('weight')
+    post = request.json.get('post')
+    nYE = request.json.get('number_year_experience')
+    description = request.json.get('description')
+    picture = request.json.get('picture')
+    print("avant create user dto")
+    user = UserDTO(0, firstname, lastname, age, email, "", size,
+                   weight, post, nYE, description, picture)
+    return update_user(user)

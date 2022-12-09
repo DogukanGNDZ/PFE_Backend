@@ -2,7 +2,6 @@ from neo4j import GraphDatabase
 from flask import make_response
 from src.dto.SportDTO import *
 import os
-import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -15,9 +14,10 @@ password = os.getenv("AUTH")
 graph = GraphDatabase.driver(host, auth=(user, password))
 
 
-def create_sport(sport_dto: SportDTO):
+def create_sport_data(sport_dto: SportDTO):
     with graph.session() as session:
         # Create the new user in the Neo4j database
+        print("in")
         result = session.run(
             'CREATE (s:Sport $sport_properties) RETURN s', sport_properties=asdict(sport_dto))
 
@@ -50,3 +50,21 @@ def fetch_all_sports():
 
         # Return the result of the query
         return sports
+
+
+def update_sport(sport: str, role: str, email: str):
+    with graph.session() as session:
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+            return True
+        elif (role == "coach"):
+            session.run(
+                'MATCH (p:Coach) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+            return True
+        elif (role == "club"):
+            session.run(
+                'MATCH (p:Club) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+            return True
+        else:
+            return False

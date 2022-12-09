@@ -30,3 +30,20 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/users
+
+###
+PUT http://localhost:5000/users/update
+Content-Type: application/json
+
+{  
+    "firstname": "jean",
+    "lastname": "marti",
+    "email": "jeabn@matrix.com",
+    "age": 16,
+    "size": 186.9,
+    "weight": 79.9,
+    "post":"reserve",
+    "number_year_experience": 189,
+    "description": "je suis null",
+    "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
+}

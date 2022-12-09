@@ -1,0 +1,20 @@
+###
+POST http://localhost:5000/sports/create
+Content-Type: application/json
+
+{
+    "name": "petanque"
+}
+
+###
+GET http://localhost:5000/sports
+
+###
+PUT http://localhost:5000/sports/addSport
+Content-Type: application/json
+
+{
+    "name": "petanque",
+    "role": "player",
+    "email": "jeabn@matrix.com"
+}

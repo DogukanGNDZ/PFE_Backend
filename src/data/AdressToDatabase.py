@@ -15,14 +15,22 @@ password = os.getenv("AUTH")
 graph = GraphDatabase.driver(host, auth=(user, password))
 
 
-def create_adress(adress_dto: AdressDTO):
+def create_adress(adress_dto: AdressDTO, email: str, role: str):
     with graph.session() as session:
         # Create the new user in the Neo4j database
         result = session.run(
             'CREATE (a:Adress $adress_properties) RETURN a', adress_properties=asdict(adress_dto))
 
         adress = result.single().data()['a']
-
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
+        elif (role == "coach"):
+            session.run(
+                'MATCH (p:Coach) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
+        elif (role == "club"):
+            session.run(
+                'MATCH (p:Club) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
         # Return the result of the query
         return adress
 
