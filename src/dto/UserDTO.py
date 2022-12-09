@@ -15,3 +15,4 @@ class UserDTO:
     number_year_experience: int
     description: str
     picture: str
+

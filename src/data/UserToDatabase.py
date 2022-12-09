@@ -6,8 +6,7 @@ import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
-
-#load_dotenv()
+# load_dotenv()
 host = "neo4j+s://12828f8f.databases.neo4j.io"
 user = "neo4j"
 password = "Tr8BU5ry7T3C4CDxKYXB0KvLRssd1Mm7EkzuQ12Rxyo"
@@ -32,6 +31,17 @@ def create_user(user_dto: UserDTO):
 def fetch_user(id: str):
     with graph.session() as session:
         result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
+
+        user = result.single().data()['u']
+        user.pop('password', None)
+
+        # Return the result of the query
+        return user
+
+
+def fetch_user_email(email: str):
+    with graph.session() as session:
+        result = session.run('MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
 
         user = result.single().data()['u']
         user.pop('password', None)
