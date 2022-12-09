@@ -5,27 +5,37 @@ Content-Type: application/json
 {
     "lastname" : "marti",
     "firstname" : "jean",
-    "email" : "jebn@matrix.com",
+    "email" : "dog@matrix.com",
     "password" : "yayaya",
     "age" : 16
 }
 
-###
-POST http://localhost:5000/users/login
+### connection
+POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
     "email": "jeabn@matrix.com",
     "password" : "yayaya"
 }
+> {% client.global.set("token", response.body) %}
 
-###
+
+### verif token
+POST http://localhost:5000/auth/confirm_token
+Content-Type: application/json
+
+{
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWFjZThhZDYtZWJiOS00YjBlLTkzYjEtNzEwMWZlM2YzYjcxIiwiZXhwIjoxNjcwNjQ5Mjl9.2GbToe-i0ES55nyuGfn9wQoCE1XokC77w6udc9JVLmA"
+}
+
+### wrong login
 POST http://localhost:5000/users/login
 Content-Type: application/json
 
 {
-    "email": "jeab@matrix.com",
-    "password" : "marti"
+    "email": "dog@matrix.com",
+    "password" : "yayay"
 }
 
 ###
