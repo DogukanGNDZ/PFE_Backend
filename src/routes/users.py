@@ -3,6 +3,7 @@ from flask_cors import cross_origin
 
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
+from src.data.AdressToDatabase import fetch_user_adress
 import uuid
 import bcrypt
 
@@ -70,3 +71,11 @@ def update_data_user():
     user = UserDTO(0, firstname, lastname, age, email, "", size,
                    weight, post, nYE, description, picture)
     return update_user(user)
+
+
+@users_bp.route("/adresses", methods=["GET"])
+@cross_origin()
+def get_adress_user():
+    role = request.args.get("role", default="", type=str)
+    email = request.args.get("email", default="", type=str)
+    return fetch_user_adress(role, email)

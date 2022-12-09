@@ -47,3 +47,9 @@ Content-Type: application/json
     "description": "je suis null",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
 }
+
+###
+GET http://localhost:5000/users/adresses?role=player&email=jeabn@matrix.com
+
+###
+GET http://localhost:5000/sports/userSport?role=player&email=jeabn@matrix.com
