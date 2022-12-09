@@ -1,0 +1,16 @@
+###
+POST http://localhost:5000/adresses/create
+Content-Type: application/json
+
+{
+    "street": "petanque",
+    "number": 42,
+    "city": "Marseille",
+    "country": "Listembour",
+    "email": "jeabn@matrix.com",
+    "role": "player",
+    "idOldAdress":"5fcf01c4-105d-4539-9486-caeaa2577ded"
+}
+
+###
+GET http://localhost:5000/adresses

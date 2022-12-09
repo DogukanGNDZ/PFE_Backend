@@ -2,7 +2,6 @@ from neo4j import GraphDatabase
 from flask import make_response
 from src.dto.SportDTO import *
 import os
-import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -15,9 +14,10 @@ password = "Tr8BU5ry7T3C4CDxKYXB0KvLRssd1Mm7EkzuQ12Rxyo"
 graph = GraphDatabase.driver(host, auth=(user, password))
 
 
-def create_sport(sport_dto: SportDTO):
+def create_sport_data(sport_dto: SportDTO):
     with graph.session() as session:
         # Create the new user in the Neo4j database
+        print("in")
         result = session.run(
             'CREATE (s:Sport $sport_properties) RETURN s', sport_properties=asdict(sport_dto))
 
@@ -50,3 +50,65 @@ def fetch_all_sports():
 
         # Return the result of the query
         return sports
+
+
+def update_sport(sport: str, role: str, email: str, nameOldSport: str):
+    with graph.session() as session:
+        if (nameOldSport == ""):
+            if (role == "player"):
+                session.run(
+                    'MATCH (p:User) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+                return True
+            elif (role == "coach"):
+                session.run(
+                    'MATCH (p:Coach) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+                return True
+            elif (role == "club"):
+                session.run(
+                    'MATCH (p:Club) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
+                return True
+        else:
+            if (role == "player"):
+                session.run(
+                    'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                return True
+            elif (role == "coach"):
+                session.run(
+                    'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                return True
+            elif (role == "club"):
+                session.run(
+                    'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                return True
+            else:
+                return False
+
+
+def fetch_user_sport(role: str, email: str):
+    with graph.session() as session:
+        if (role == "player"):
+            result = session.run(
+                'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) WHERE p.email= $email RETURN old', email=email)
+            sports = []
+            for sport in result:
+                a = sport.data()['old']
+                sports.append(a)
+            return sports
+        elif (role == "coach"):
+            result = session.run(
+                'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) WHERE p.email= $email RETURN old', email=email)
+            sports = []
+            for sport in result:
+                a = sport.data()['old']
+                sports.append(a)
+            return sports
+        elif (role == "club"):
+            result = session.run(
+                'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) WHERE p.email= $email RETURN old', email=email)
+            sports = []
+            for sport in result:
+                a = sport.data()['old']
+                sports.append(a)
+            return sports
+        else:
+            return []
