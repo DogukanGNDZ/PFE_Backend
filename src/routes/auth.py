@@ -38,6 +38,7 @@ def login():
 
 
 @auth_bp.route("/confirm_token", methods=['POST'])
+@cross_origin()
 def confirm_token():
     # Get the token from the request
     token = request.json['token']
