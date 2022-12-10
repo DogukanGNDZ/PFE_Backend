@@ -1,8 +1,12 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
+from flask_cors import cross_origin
+
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
 import uuid
 import bcrypt
+import jwt
+import datetime
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -10,7 +14,7 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 @users_bp.route("", methods=["GET"])
 def get_all_users():
     id = request.args.get("id", default=1, type=int)
-    if(id == 1):
+    if (id == 1):
         return fetch_all_users()
     return fetch_user(id)
 
@@ -21,6 +25,7 @@ def generate_id():
 
 
 @users_bp.route("/register", methods=["POST"])
+@cross_origin()
 def register():
     # Get the values from the request
     print("aaaaaaaaaaaaaaaaaaaaaa")
@@ -32,9 +37,12 @@ def register():
     print(password)
     byte_pwd = password.encode('UTF-8')
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())  # hashed pwd
-    age = request.json.get('age')
+    age = 0
     firstname = request.json.get('firstname')
     lastname = request.json.get('lastname')
     email = request.json.get('email')
-    user = UserDTO(generate_id(), firstname, lastname, age, email, pwd_hash)
+    user = UserDTO(generate_id(), firstname, lastname, age,
+                   email, pwd_hash, 0, 0, "", 0, "", "")
     return create_user(user)
+
+

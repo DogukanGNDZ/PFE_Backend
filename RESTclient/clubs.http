@@ -1,0 +1,13 @@
+###
+POST  http://localhost:5000/clubs/register
+Content-Type: application/json
+
+{
+    "password" : "marti",
+    "name" : "jean",
+    "email" : "jeab@matrix.com",
+    "id_manager" : "yayaya"
+}
+
+###
+GET http://localhost:5000/clubs
