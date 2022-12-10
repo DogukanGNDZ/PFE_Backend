@@ -1,5 +1,4 @@
 from neo4j import GraphDatabase
-from flask import make_response
 from src.dto.UserDTO import *
 import os
 import bcrypt
