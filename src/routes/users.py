@@ -43,6 +43,9 @@ def register():
     email = request.json.get('email')
     user = UserDTO(generate_id(), firstname, lastname, age,
                    email, pwd_hash, 0, 0, "", 0, "", "")
-    return create_user(user)
+    if(check_mail(email)):
+        return make_response("Email already use", 400)   
+    else:           
+        return create_user(user)
 
 

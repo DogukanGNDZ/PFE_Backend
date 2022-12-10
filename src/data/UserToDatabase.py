@@ -91,3 +91,14 @@ def fetch_all_users():
 
         # Return the result of the query
         return users
+
+
+def check_mail(email: str):
+    with graph.session() as session:
+      query = 'MATCH (u:User) WHERE u.email = $email RETURN u'
+      result = session.run(query, email=email)
+      if result.single():
+        # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
+        return True
+      else : 
+        return False
