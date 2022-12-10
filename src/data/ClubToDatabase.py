@@ -6,10 +6,10 @@ import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
-#load_dotenv()
-host = "neo4j+s://12828f8f.databases.neo4j.io"
-user = "neo4j"
-password = "Tr8BU5ry7T3C4CDxKYXB0KvLRssd1Mm7EkzuQ12Rxyo"
+load_dotenv()
+host = os.getenv("HOST")
+user = os.getenv("USER")
+password = os.getenv("AUTH")
 
 # Connect to the database
 graph = GraphDatabase.driver(host, auth=(user, password))

@@ -31,7 +31,6 @@ def login():
     email = request.json.get('email')
     if check_user(byte_pwd, email):
         get_user = fetch_user_email(email)
-        print(get_user["id"])
         return generate_jwt(get_user["id"])
     else:
         response = make_response("Wrong password", 400)
@@ -45,9 +44,7 @@ def confirm_token():
     # Validate the token
     try:
         # Decode the token using your secret key
-        print(token)
         decoded_token = jwt.decode(token, 'M', 'HS256')
-        print(decoded_token)
         # The token is valid
         response = make_response("Valid token", 200)
         return response

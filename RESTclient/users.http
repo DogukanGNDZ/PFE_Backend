@@ -15,10 +15,10 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "jeabn@matrix.com",
+    "email": "dog@matrix.com",
     "password" : "yayaya"
 }
-> {% client.global.set("token", response.body) %}
+###> {% client.global.set("token", response.body) %}
 
 
 ### verif token
@@ -26,11 +26,11 @@ POST http://localhost:5000/auth/confirm_token
 Content-Type: application/json
 
 {
-    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWFjZThhZDYtZWJiOS00YjBlLTkzYjEtNzEwMWZlM2YzYjcxIiwiZXhwIjoxNjcwNjQ5Mjl9.2GbToe-i0ES55nyuGfn9wQoCE1XokC77w6udc9JVLmA"
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwNzU4NTA1fQ.xn6jPw4HW6STttPy7JiNgeMYIw0jZ7XEyYPp2kcf3vE"
 }
 
 ### wrong login
-POST http://localhost:5000/users/login
+POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
