@@ -28,13 +28,7 @@ def generate_id():
 @cross_origin()
 def register():
     # Get the values from the request
-    print("aaaaaaaaaaaaaaaaaaaaaa")
     password = request.json.get('password')
-    if (password is not None):
-        print("y a pas rien")
-    else:
-        print("y a rien")
-    print(password)
     byte_pwd = password.encode('UTF-8')
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())  # hashed pwd
     age = 0
@@ -49,3 +43,10 @@ def register():
         return create_user(user)
 
 
+
+@users_bp.route("/myprofil", methods=["GET"])
+@cross_origin()
+def get_my_profil():
+    user = request.headers.get('Authorize')
+    claims = jwt.decode(user, 'M', 'HS256')
+    return fetch_user(claims['user_id'])
