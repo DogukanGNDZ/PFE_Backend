@@ -24,8 +24,29 @@ def generate_id():
 
 @teams_bp.route("/create", methods=["POST"])
 @cross_origin()
-def create_team():
+def create():
     # Get the values from the request
     street = request.json.get('category')
     team = TeamDTO(generate_id(), street, 0)
-    return team
+    return create_team(team)
+
+
+@teams_bp.route("/add", methods=["POST"])
+@cross_origin()
+def add_player():
+
+    player = request.json.get('player')
+    team = request.json.get('team')
+
+    add(team, player)
+    return ('', 200)
+
+@teams_bp.route("/remove", methods=["POST"])
+@cross_origin()
+def remove_player():
+
+    player = request.json.get('player')
+    team = request.json.get('team')
+
+    remove(team, player)
+    return ('', 200)

@@ -49,3 +49,23 @@ def fetch_all_teams():
 
         # Return the result of the query
         return teams
+
+def add(team_id: str, email: str):
+    with graph.session() as session:
+        result = session.run('MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email = email, team_id = team_id)
+
+        data = result.single().data()
+        rel = data["r"]
+
+        print(f"rel: {rel}")
+        # return data
+
+def remove(team_id: str, email: str):
+    with graph.session() as session:
+        result = session.run('MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email = email, team_id = team_id)
+        data = result.single().data()
+        user = data["u"]
+        team = data["t"]
+
+        print(f"user: {user} | team: {team}")
+        # return data["r"]
