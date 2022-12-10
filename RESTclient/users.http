@@ -40,7 +40,7 @@ Content-Type: application/json
     "lastname": "marti",
     "email": "jeabn@matrix.com",
     "age": 16,
-    "size": 186.9,
+    "size": 186.9,  
     "weight": 79.9,
     "post":"reserve",
     "number_year_experience": 189,
