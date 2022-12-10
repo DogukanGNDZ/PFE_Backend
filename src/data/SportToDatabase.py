@@ -70,15 +70,15 @@ def update_sport(sport: str, role: str, email: str, nameOldSport: str):
         else:
             if (role == "player"):
                 session.run(
-                    'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
                 return True
             elif (role == "coach"):
                 session.run(
-                    'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
                 return True
             elif (role == "club"):
                 session.run(
-                    'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r DELETE old', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
                 return True
             else:
                 return False
