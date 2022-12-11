@@ -3,10 +3,10 @@ from flask_cors import cross_origin
 
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
+from src.routes.auth import authorize
 import uuid
 import bcrypt
-import jwt
-import datetime
+import ast
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -47,6 +47,9 @@ def register():
 @users_bp.route("/myprofil", methods=["GET"])
 @cross_origin()
 def get_my_profil():
-    user = request.headers.get('Authorize')
-    claims = jwt.decode(user, 'M', 'HS256')
-    return fetch_user(claims['user_id'])
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code==498 or claims.status_code==401:
+        return make_response('Invalid Token',498)
+    return fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
+    

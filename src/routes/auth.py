@@ -1,10 +1,14 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
-
+from dotenv import load_dotenv
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
 import jwt
 import datetime
+import os
+
+load_dotenv()
+KEY = os.getenv("KEYJWT")
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -18,8 +22,7 @@ def generate_jwt(user_id):
 
     # Sign the JWT using a secret key
     # do not forget to put this key in the env filee
-    jwt_token = jwt.encode(payload, 'M')
-
+    jwt_token = jwt.encode(payload, KEY)
     return jwt_token
 
 
@@ -45,9 +48,26 @@ def confirm_token():
     # Validate the token
     try:
         # Decode the token using your secret key
-        decoded_token = jwt.decode(token, 'M', 'HS256')
+        decoded_token = jwt.decode(token, KEY, 'HS256')
         # The token is valid
         response = make_response("Valid token", 200)
+        return response
+    # The token has expired
+    except jwt.ExpiredSignatureError:
+        response = make_response("Token has expired", 401)
+        return response
+    # The token is invalid
+    except jwt.InvalidTokenError:
+        response = make_response("Token is invalid", 498)
+        return response
+
+
+def authorize(token:str):
+    try:
+        # Decode the token using your secret key
+        decoded_token = jwt.decode(token, KEY, 'HS256')
+        # The token is valid
+        response = make_response(decoded_token, 200)
         return response
     # The token has expired
     except jwt.ExpiredSignatureError:
