@@ -7,6 +7,7 @@ from src.routes.sports import sports_bp
 from src.routes.adresses import adresses_bp
 from src.routes.teams import teams_bp
 from src.routes.auth import auth_bp
+from src.routes.notifications import notifications_bp
 
 
 def create_app():
@@ -18,4 +19,5 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(adresses_bp)
     app.register_blueprint(teams_bp)
+    app.register_blueprint(notifications_bp)
     return app

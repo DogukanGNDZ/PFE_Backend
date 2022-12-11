@@ -1,0 +1,12 @@
+###
+POST http://localhost:5000/notifications/create
+Content-Type: application/json
+
+{
+    "content": "Jafar je suis coincé",
+    "role": "coach",
+    "email": "jean@matrix.com"
+}
+
+###
+GET http://localhost:5000/notifications

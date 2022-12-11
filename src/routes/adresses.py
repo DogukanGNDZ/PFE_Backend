@@ -10,8 +10,8 @@ adresses_bp = Blueprint("adresses", __name__, url_prefix="/adresses")
 
 @adresses_bp.route("", methods=["GET"])
 def get_all_adresses():
-    id = request.args.get("id", default=1, type=int)
-    if (id == 1):
+    id = request.args.get("id", default="", type=str)
+    if (id == ""):
         return fetch_all_adress()
     return fetch_adress(id)
 
