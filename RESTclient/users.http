@@ -53,3 +53,15 @@ GET http://localhost:5000/users/adresses?role=player&email=jeabn@matrix.com
 
 ###
 GET http://localhost:5000/sports/userSport?role=player&email=jeabn@matrix.com
+
+###
+POST http://localhost:5000/users/applyClub
+Content-Type: application/json
+
+{
+    "email_user": "jeabn@matrix.com",
+    "email_club" : "jeab@matrix.com"
+}
+
+###
+GET http://localhost:5000/users/userClub?email_user=jeabn@matrix.com

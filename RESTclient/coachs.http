@@ -12,3 +12,16 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/coachs
+
+
+###
+POST http://localhost:5000/coachs/applyClub
+Content-Type: application/json
+
+{
+    "email_coach": "jean@matrix.com",
+    "email_club" : "jeab@matrix.com"
+}
+
+###
+GET http://localhost:5000/coachs/coachClub?email_coach=jean@matrix.com

@@ -32,7 +32,52 @@ def register():
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())
     name = request.json.get('name')
     email = request.json.get('email')
-    id_manager = request.json.get('id_manager')
     club = ClubDTO(generate_id(), name, email, pwd_hash,
                    "", 0, datetime.datetime.now(), "")
     return create_club(club)
+
+
+@clubs_bp.route("/memberRequests", methods=["GET"])
+@cross_origin()
+def get_member_request():
+    email_club = request.args.get("email_club", default="", type=str)
+    role = request.args.get("role", default="", type=str)
+    if (role == "player"):
+        return get_all_request_join_users(email_club)
+    else:
+        return get_all_request_join_coach(email_club)
+
+
+@clubs_bp.route("/members", methods=["GET"])
+@cross_origin()
+def get_members():
+    email_club = request.args.get("email_club", default="", type=str)
+    role = request.args.get("role", default="", type=str)
+    if (role == "player"):
+        return get_all_players(email_club)
+    else:
+        return get_all_coachs(email_club)
+
+
+@clubs_bp.route("/acceptNewMember", methods=["POST"])
+@cross_origin()
+def accept_member():
+    print("Accepting")
+    email_member = request.json.get('email_member')
+    print("1")
+    role = request.json.get('role')
+    print("2")
+    email_club = request.json.get('email_club')
+    print('3')
+    accept_new_member(email_club, email_member, role)
+    return "Member accepted"
+
+
+@clubs_bp.route("/removeMember", methods=["DELETE"])
+@cross_origin()
+def remove_member_club():
+    email_member = request.json.get('email_member')
+    email_club = request.json.get('email_club')
+    role = request.json.get('role')
+    remove_member(email_club, email_member, role)
+    return "Member remove"

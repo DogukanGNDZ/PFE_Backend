@@ -6,7 +6,7 @@ import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
-#load_dotenv()
+# load_dotenv()
 host = "neo4j+s://12828f8f.databases.neo4j.io"
 user = "neo4j"
 password = "Tr8BU5ry7T3C4CDxKYXB0KvLRssd1Mm7EkzuQ12Rxyo"
@@ -52,3 +52,85 @@ def fetch_all_clubs():
 
         # Return the result of the query
         return clubs
+
+
+def get_all_request_join_users(email_club: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE c.email = $name return p', name=email_club)
+
+        users = []
+        for user in result:
+            u = user.data()['p']
+            u.pop('password', None)
+            users.append(u)
+        return users
+
+
+def get_all_request_join_coach(email_club: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE c.email = $name return p', name=email_club)
+
+        coachs = []
+
+        for coach in result:
+            c = coach.data()['p']
+            c.pop('password', None)
+            coachs.append(c)
+
+        return coachs
+
+
+def accept_new_member(email_club: str, email_member: str, role: str):
+    with graph.session() as session:
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+            session.run(
+                'MATCH (u:User) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:PLAYER_OF]->(c)', email=email_member, name=email_club)
+        else:
+            session.run(
+                'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+            session.run(
+                'MATCH (u:Coach) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:COACH_OF]->(c)', email=email_member, name=email_club)
+
+
+def get_all_players(email_club: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE c.email = $name return p', name=email_club)
+
+        users = []
+
+        for user in result:
+            u = user.data()['p']
+            u.pop('password', None)
+            users.append(u)
+
+        return users
+
+
+def get_all_coachs(email_club: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE c.email = $name return p', name=email_club)
+
+        coachs = []
+
+        for coach in result:
+            c = coach.data()['p']
+            c.pop('password', None)
+            coachs.append(c)
+
+        return coachs
+
+
+def remove_member(email_club: str, email_member: str, role: str):
+    with graph.session() as session:
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+        else:
+            session.run(
+                'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)

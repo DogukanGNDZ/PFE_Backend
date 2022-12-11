@@ -6,7 +6,7 @@ import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
-#load_dotenv()
+# load_dotenv()
 host = "neo4j+s://12828f8f.databases.neo4j.io"
 user = "neo4j"
 password = "Tr8BU5ry7T3C4CDxKYXB0KvLRssd1Mm7EkzuQ12Rxyo"
@@ -53,3 +53,28 @@ def fetch_all_coachs():
 
         # Return the result of the query
         return coachs
+
+
+def apply_for_club_coach(email_coach: str, email_club: str):
+    with graph.session() as session:
+        print(email_coach)
+        print(email_club)
+        session.run(
+            'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_coach, name=email_club)
+        session.run(
+            'MATCH (u:Coach), (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[r:APPLY_FOR_COACH]->(c)', email=email_coach, name=email_club)
+
+
+def get_coach_club(email_user: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name return c', name=email_user)
+
+        clubs = []
+
+        for club in result:
+            u = club.data()['c']
+            u.pop('password', None)
+            clubs.append(u)
+
+        return clubs

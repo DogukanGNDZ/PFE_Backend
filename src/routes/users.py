@@ -79,3 +79,19 @@ def get_adress_user():
     role = request.args.get("role", default="", type=str)
     email = request.args.get("email", default="", type=str)
     return fetch_user_adress(role, email)
+
+
+@users_bp.route("/applyClub", methods=["POST"])
+@cross_origin()
+def apply_for_club():
+    email_user = request.json.get('email_user')
+    email_club = request.json.get('email_club')
+    apply_for_club_user(email_user, email_club)
+    return "Request send"
+
+
+@users_bp.route("/userClub", methods=["GET"])
+@cross_origin()
+def get_club():
+    email_user = request.args.get("email_user", default="", type=str)
+    return get_user_club(email_user)

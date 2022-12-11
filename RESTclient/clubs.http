@@ -5,9 +5,50 @@ Content-Type: application/json
 {
     "password" : "marti",
     "name" : "jean",
-    "email" : "jeab@matrix.com",
-    "id_manager" : "yayaya"
+    "email" : "jeab@matrix.com"
 }
 
 ###
 GET http://localhost:5000/clubs
+
+###
+GET http://localhost:5000/clubs/memberRequests?role=player&email_club=jeab@matrix.com
+
+###
+GET http://localhost:5000/clubs/memberRequests?role=coach&email_club=jeab@matrix.com
+
+###
+POST  http://localhost:5000/clubs/acceptNewMember
+Content-Type: application/json
+
+{
+    "email_member" : "jean@matrix.com",
+    "role" : "coach",
+    "email_club" : "jeab@matrix.com"
+}
+
+###
+POST  http://localhost:5000/clubs/acceptNewMember
+Content-Type: application/json
+
+{
+    "email_member" : "jeabn@matrix.com",
+    "role" : "player",
+    "email_club" : "jeab@matrix.com"
+}
+
+###
+GET http://localhost:5000/clubs/members?role=coach&email_club=jeab@matrix.com
+
+###
+GET http://localhost:5000/clubs/members?role=player&email_club=jeab@matrix.com
+
+###
+DELETE http://localhost:5000/clubs/removeMember
+Content-Type: application/json
+
+{
+    "email_member" : "jean@matrix.com",
+    "role" : "coach",
+    "email_club" : "jeab@matrix.com"
+}
