@@ -127,3 +127,11 @@ def get_user_club(email_user: str):
             clubs.append(u)
 
         return clubs
+
+
+def leave_club(email_user: str, email_club: str):
+    with graph.session() as session:
+        session.run(
+            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r', name=email_user, email=email_club)
+        session.run(
+            'MATCH (p:User)-[r:CONSTITUE]->(t:Team) WHERE p.email = $email DELETE r', email=email_user)

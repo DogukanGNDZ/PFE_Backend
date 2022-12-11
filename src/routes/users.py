@@ -95,3 +95,12 @@ def apply_for_club():
 def get_club():
     email_user = request.args.get("email_user", default="", type=str)
     return get_user_club(email_user)
+
+
+@users_bp.route("/leaveClub", methods=["DELETE"])
+@cross_origin()
+def leave_club_player():
+    email_user = request.json.get('email_user')
+    email_club = request.json.get('email_club')
+    leave_club(email_user, email_club)
+    return "Request leave successfully"
