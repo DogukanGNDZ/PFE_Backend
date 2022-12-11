@@ -63,3 +63,13 @@ def leave_club_coach():
     email_club = request.json.get('email_club')
     leave_club(email_coach, email_club)
     return "Request leave successfully"
+
+
+@coachs_bp.route("/isMember", methods=["GET"])
+@cross_origin()
+def check_is_member():
+    email_coach = request.args.get("email_coach", default="", type=str)
+    if (is_member(email_coach)):
+        return "Is member"
+    else:
+        return "Not a member"

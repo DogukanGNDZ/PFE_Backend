@@ -34,3 +34,6 @@ Content-Type: application/json
     "email_coach": "jean@matrix.com",
     "email_club" : "jeab@matrix.com"
 }
+
+###
+GET http://localhost:5000/coachs/isMember?email_coach=jean@matrix.com

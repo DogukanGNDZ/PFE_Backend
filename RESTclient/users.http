@@ -74,3 +74,6 @@ Content-Type: application/json
     "email_user": "jeabn@matrix.com",
     "email_club" : "jeab@matrix.com"
 }
+
+### 
+GET http://localhost:5000/users/isMember?email_user=jeabn@matrix.com

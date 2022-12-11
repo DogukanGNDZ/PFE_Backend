@@ -84,3 +84,13 @@ def leave_club(email_coach: str, email_club: str):
     with graph.session() as session:
         session.run(
             'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r', name=email_coach, email=email_club)
+
+
+def is_member(email_coach: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name RETURN COUNT(r)>0 AS d', name=email_coach)
+        data = result.single().data()
+
+        club = data["d"]
+        return club

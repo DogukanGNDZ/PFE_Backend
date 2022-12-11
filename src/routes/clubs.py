@@ -62,13 +62,9 @@ def get_members():
 @clubs_bp.route("/acceptNewMember", methods=["POST"])
 @cross_origin()
 def accept_member():
-    print("Accepting")
     email_member = request.json.get('email_member')
-    print("1")
     role = request.json.get('role')
-    print("2")
     email_club = request.json.get('email_club')
-    print('3')
     accept_new_member(email_club, email_member, role)
     return "Member accepted"
 
