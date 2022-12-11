@@ -1,5 +1,4 @@
 from neo4j import GraphDatabase
-from flask import make_response
 from src.dto.UserDTO import *
 import os
 import bcrypt
@@ -126,3 +125,45 @@ def update_user(user_dto: UserDTO):
 
         # Return the result of the query
         return user
+
+
+def apply_for_club_user(email_user: str, email_club: str):
+    with graph.session() as session:
+
+        session.run(
+            'MATCH (u:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE u.email= $email AND c.email = $name DELETE r', email=email_user, name=email_club)
+        session.run(
+            'MATCH (u:User), (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[r:APPLY_FOR_PLAYER]->(c) RETURN u,c,r', email=email_user, name=email_club)
+
+
+def get_user_club(email_user: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name return c', name=email_user)
+
+        clubs = []
+
+        for club in result:
+            u = club.data()['c']
+            u.pop('password', None)
+            clubs.append(u)
+
+        return clubs
+
+
+def leave_club(email_user: str, email_club: str):
+    with graph.session() as session:
+        session.run(
+            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r', name=email_user, email=email_club)
+        session.run(
+            'MATCH (p:User)-[r:CONSTITUE]->(t:Team) WHERE p.email = $email DELETE r', email=email_user)
+
+
+def is_member(email_user: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name RETURN COUNT(r)>0 AS d', name=email_user)
+        data = result.single().data()
+
+        club = data["d"]
+        return club

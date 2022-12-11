@@ -57,10 +57,40 @@ Content-Type: application/json
     "lastname": "marti",
     "email": "jeabn@matrix.com",
     "age": 16,
-    "size": 186.9,
+    "size": 186.9,  
     "weight": 79.9,
     "post":"reserve",
     "number_year_experience": 189,
     "description": "je suis null",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
 }
+
+###
+GET http://localhost:5000/users/adresses?role=player&email=jeabn@matrix.com
+
+###
+GET http://localhost:5000/sports/userSport?role=player&email=jeabn@matrix.com
+
+###
+POST http://localhost:5000/users/applyClub
+Content-Type: application/json
+
+{
+    "email_user": "jeabn@matrix.com",
+    "email_club" : "jeab@matrix.com"
+}
+
+###
+GET http://localhost:5000/users/userClub?email_user=jeabn@matrix.com
+
+###
+DELETE http://localhost:5000/users/leaveClub
+Content-Type: application/json
+
+{
+    "email_user": "jeabn@matrix.com",
+    "email_club" : "jeab@matrix.com"
+}
+
+### 
+GET http://localhost:5000/users/isMember?email_user=jeabn@matrix.com

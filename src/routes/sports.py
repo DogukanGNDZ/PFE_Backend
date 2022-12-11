@@ -26,10 +26,8 @@ def generate_id():
 @cross_origin()
 def create_sport():
     # Get the values from the request
-    print("routes")
     name = request.json.get('name')
     sport = SportDTO(generate_id(), name)
-    print("before")
     return create_sport_data(sport)
 
 
@@ -39,8 +37,17 @@ def add_sport_user():
     name = request.json.get('name')
     role = request.json.get('role')
     email = request.json.get('email')
-    if (update_sport(name, role, email)):
+    nameOldSport = request.json.get('nameOldSport')
+    if (update_sport(name, role, email, nameOldSport)):
         return "sport added successfully"
     else:
         response = make_response("Wrong data", 400)
         return response
+
+
+@sports_bp.route("/userSport", methods=["GET"])
+@cross_origin()
+def get_adress_user():
+    role = request.args.get("role", default="", type=str)
+    email = request.args.get("email", default="", type=str)
+    return fetch_user_sport(role, email)

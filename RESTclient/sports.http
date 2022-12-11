@@ -3,7 +3,7 @@ POST http://localhost:5000/sports/create
 Content-Type: application/json
 
 {
-    "name": "petanque"
+    "name": "rollers"
 }
 
 ###
@@ -14,7 +14,8 @@ PUT http://localhost:5000/sports/addSport
 Content-Type: application/json
 
 {
-    "name": "petanque",
+    "name": "rollers",
     "role": "player",
-    "email": "jeabn@matrix.com"
+    "email": "jeabn@matrix.com",
+    "nameOldSport": "petanque"
 }

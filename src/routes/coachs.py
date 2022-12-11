@@ -38,3 +38,38 @@ def register():
     coach = CoachDTO(generate_id(), firstname, lastname,
                      age, email, pwd_hash, 0, "", "")
     return create_coach(coach)
+
+
+@coachs_bp.route("/applyClub", methods=["POST"])
+@cross_origin()
+def apply_for_club():
+    email_coach = request.json.get('email_coach')
+    email_club = request.json.get('email_club')
+    apply_for_club_coach(email_coach, email_club)
+    return "Request send"
+
+
+@coachs_bp.route("/coachClub", methods=["GET"])
+@cross_origin()
+def get_club():
+    email_coach = request.args.get("email_coach", default="", type=str)
+    return get_coach_club(email_coach)
+
+
+@coachs_bp.route("/leaveClub", methods=["DELETE"])
+@cross_origin()
+def leave_club_coach():
+    email_coach = request.json.get('email_coach')
+    email_club = request.json.get('email_club')
+    leave_club(email_coach, email_club)
+    return "Request leave successfully"
+
+
+@coachs_bp.route("/isMember", methods=["GET"])
+@cross_origin()
+def check_is_member():
+    email_coach = request.args.get("email_coach", default="", type=str)
+    if (is_member(email_coach)):
+        return "Is member"
+    else:
+        return "Not a member"

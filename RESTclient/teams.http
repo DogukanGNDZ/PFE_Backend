@@ -1,0 +1,29 @@
+###
+POST http://localhost:5000/teams/create
+Content-Type: application/json
+
+{
+    "category": "test"
+}
+
+###
+GET http://localhost:5000/teams?id=f1b218dd-203a-4bc4-b0fd-4e6712426d78
+
+###
+POST http://localhost:5000/teams/add
+Content-Type: application/json
+
+{
+    "player":"jeabn@matrix.com",
+    "team":"f1b218dd-203a-4bc4-b0fd-4e6712426d78"
+}
+
+
+###
+POST http://localhost:5000/teams/remove
+Content-Type: application/json
+
+{
+    "player":"jeabn@matrix.com",
+    "team":"f1b218dd-203a-4bc4-b0fd-4e6712426d78"
+}
