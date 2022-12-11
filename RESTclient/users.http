@@ -5,31 +5,48 @@ Content-Type: application/json
 {
     "lastname" : "marti",
     "firstname" : "jean",
-    "email" : "jebn@matrix.com",
+    "email" : "do@matrix.com",
     "password" : "yayaya",
     "age" : 16
 }
 
-###
-POST http://localhost:5000/users/login
+### connection
+POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "jeabn@matrix.com",
+    "email": "dog@matrix.com",
     "password" : "yayaya"
 }
+###> {% client.global.set("token", response.body) %}
 
-###
-POST http://localhost:5000/users/login
+
+### verif token
+POST http://localhost:5000/auth/confirm_token
 Content-Type: application/json
 
 {
-    "email": "jeab@matrix.com",
-    "password" : "marti"
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwNzU4NTA1fQ.xn6jPw4HW6STttPy7JiNgeMYIw0jZ7XEyYPp2kcf3vE"
+}
+
+### wrong login
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "email": "dog@matrix.com",
+    "password" : "yayay"
 }
 
 ###
 GET http://localhost:5000/users
+
+
+###
+GET http://localhost:5000/users/myprofil
+Content-Type: application/json
+Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwODQ4NjAzfQ.0M9RHwdq2dsO_nTZK8F2jWXLFEmyF-Z-kFGM47qt3zk
+
 
 ###
 PUT http://localhost:5000/users/update

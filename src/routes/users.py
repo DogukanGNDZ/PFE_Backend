@@ -3,8 +3,10 @@ from flask_cors import cross_origin
 
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
+from src.routes.auth import authorize
 import uuid
 import bcrypt
+import ast
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -26,7 +28,6 @@ def generate_id():
 @cross_origin()
 def register():
     # Get the values from the request
-
     password = request.json.get('password')
     byte_pwd = password.encode('UTF-8')
     pwd_hash = bcrypt.hashpw(byte_pwd, bcrypt.gensalt())  # hashed pwd
@@ -36,21 +37,20 @@ def register():
     email = request.json.get('email')
     user = UserDTO(generate_id(), firstname, lastname, age,
                    email, pwd_hash, 0, 0, "", 0, "", "")
-    return create_user(user)
-
-
-@users_bp.route("/login", methods=["POST"])
-@cross_origin()
-def login():
-    password = request.json.get('password')
-    byte_pwd = password.encode('UTF-8')
-    email = request.json.get('email')
-    if check_user(byte_pwd, email):
-        print("work")
-        return "login successful"
+    if (check_mail(email)):
+        return make_response("Email already use", 400)
     else:
-        response = make_response("Wrong password", 400)
-        return response
+        return create_user(user)
+
+
+@users_bp.route("/myprofil", methods=["GET"])
+@cross_origin()
+def get_my_profil():
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+    return fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
 
 
 @users_bp.route("/update", methods=["PUT"])

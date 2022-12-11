@@ -5,7 +5,7 @@
 instance/*
 !instance/.gitignore
 .webassets-cache
-.env
+
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -46,7 +46,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-
+.env
 *.ini
 
 # Unit test / coverage reports

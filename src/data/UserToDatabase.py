@@ -6,7 +6,6 @@ import bcrypt
 from dotenv import load_dotenv
 from dataclasses import asdict
 
-
 load_dotenv()
 host = os.getenv("HOST")
 user = os.getenv("USER")
@@ -32,6 +31,18 @@ def create_user(user_dto: UserDTO):
 def fetch_user(id: str):
     with graph.session() as session:
         result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
+
+        user = result.single().data()['u']
+        user.pop('password', None)
+
+        # Return the result of the query
+        return user
+
+
+def fetch_user_email(email: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
 
         user = result.single().data()['u']
         user.pop('password', None)
@@ -81,6 +92,17 @@ def fetch_all_users():
 
         # Return the result of the query
         return users
+
+
+def check_mail(email: str):
+    with graph.session() as session:
+        query = 'MATCH (u:User) WHERE u.email = $email RETURN u'
+        result = session.run(query, email=email)
+        if result.single():
+            # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
+            return True
+        else:
+            return False
 
 
 def update_user(user_dto: UserDTO):
