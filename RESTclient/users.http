@@ -52,7 +52,7 @@ Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjN
 ###
 PUT http://localhost:5000/users/update
 Content-Type: application/json
-Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQxODIyfQ.9rSBcMhfx_9OPf5Eog2fqQfmGe59Iz4SoQOewwh7qWc
+Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQ1NDI0fQ.9bAeMXB4E5vRlwp3hi6I9Vop0x2fIIbh_YaSgyyRH-U
 
 {  
     "firstname": "MESSI",
@@ -61,7 +61,7 @@ Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS
     "age": 16,
     "size": 186.9,  
     "weight": 79.9,
-    "post":"reserve",
+    "post":"place du GOAT",
     "number_year_experience": 189,
     "description": "je suis le GOATTT",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"

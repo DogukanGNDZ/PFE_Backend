@@ -75,8 +75,9 @@ def update_data_user():
     description = request.json.get('description')
     picture = request.json.get('picture')
     
-    id=fetch_user_email(email)["email"]
-    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"]==id:
+    id=fetch_user_email(email)["id"]
+    print(fetch_user_email(email))
+    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"]!=id:
         return make_response('Not authorized', 401)
     
     print("avant create user dto")
