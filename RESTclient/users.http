@@ -8,7 +8,7 @@ Content-Type: application/json
     "email" : "jeasduigshgkscb@matrix.com",
     "password" : "yayaya",
     "age" : 16,
-    "role":"club"
+    "role":"player"
 }
 
 ### connection
@@ -16,8 +16,8 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "jeahdfushkfsfb@matrix.com",
-    "password" : "marti"
+    "email": "dog@front.com",
+    "password" : "yayayaya"
 }
 ###> {% client.global.set("token", response.body) %}
 
@@ -52,11 +52,12 @@ Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjN
 ###
 PUT http://localhost:5000/users/update
 Content-Type: application/json
+Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiME4NmJlZjUtZGE0Ni00MDExLWFhNTYtNzg2ZjQyMmIyNjkzIiwiZXhwIjoxNjcwOTM5NTg0fQ.VmiY-fL1cIX7QMUlXX2Ypbs9EwecI3I18RK6ChtNy8g
 
 {  
     "firstname": "jean",
-    "lastname": "marti",
-    "email": "jeabn@matrix.com",
+    "lastname": "martidf",
+    "email": "dog@front.com",
     "age": 16,
     "size": 186.9,  
     "weight": 79.9,
