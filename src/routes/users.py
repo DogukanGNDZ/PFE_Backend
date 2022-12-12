@@ -65,6 +65,11 @@ def get_my_profil():
 @users_bp.route("/update", methods=["PUT"])
 @cross_origin()
 def update_data_user():
+    token = request.headers.get('Authorize')
+    claims = authorize(token);
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+    
     firstname = request.json.get('firstname')
     lastname = request.json.get('lastname')
     email = request.json.get('email')
@@ -75,6 +80,11 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    
+    id=fetch_user_email(email)["email"]
+    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"]==id:
+        return make_response('Not authorized', 401)
+    
     print("avant create user dto")
     user = UserDTO(0, firstname, lastname, age, email, "", size,
                    weight, post, nYE, description, picture)
