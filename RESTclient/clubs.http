@@ -12,10 +12,10 @@ Content-Type: application/json
 GET http://localhost:5000/clubs
 
 ###
-GET http://localhost:5000/clubs/memberRequests?role=player&email_club=jeab@matrix.com
+GET http://localhost:5000/clubs/memberRequests?email_club=jeab@matrix.com&role=player
 
 ###
-GET http://localhost:5000/clubs/memberRequests?role=coach&email_club=jeab@matrix.com
+GET http://localhost:5000/clubs/memberRequests?email_club=jeab@matrix.com&role=coach
 
 ###
 POST  http://localhost:5000/clubs/acceptNewMember
@@ -38,10 +38,10 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/clubs/members?role=coach&email_club=jeab@matrix.com
+GET http://localhost:5000/clubs/members?email_club=jeab@matrix.com&role=player
 
 ###
-GET http://localhost:5000/clubs/members?role=player&email_club=jeab@matrix.com
+GET http://localhost:5000/clubs/members?email_club=jeab@matrix.com&role=coach
 
 ###
 DELETE http://localhost:5000/clubs/removeMember
@@ -49,6 +49,8 @@ Content-Type: application/json
 
 {
     "email_member" : "jean@matrix.com",
-    "role" : "coach",
     "email_club" : "jeab@matrix.com"
 }
+
+###
+DELETE http://localhost:5000/clubs/removeAllClubs

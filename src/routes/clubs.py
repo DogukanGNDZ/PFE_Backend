@@ -6,6 +6,7 @@ from src.data.ClubToDatabase import *
 import uuid
 import bcrypt
 import datetime
+from src.routes.auth import get_role
 
 clubs_bp = Blueprint("clubs", __name__, url_prefix="/clubs")
 
@@ -63,7 +64,7 @@ def get_members():
 @cross_origin()
 def accept_member():
     email_member = request.json.get('email_member')
-    role = request.json.get('role')
+    role = get_role(email_member)
     email_club = request.json.get('email_club')
     accept_new_member(email_club, email_member, role)
     return "Member accepted"
@@ -74,6 +75,13 @@ def accept_member():
 def remove_member_club():
     email_member = request.json.get('email_member')
     email_club = request.json.get('email_club')
-    role = request.json.get('role')
+    role = get_role(email_member)
     remove_member(email_club, email_member, role)
     return "Member remove"
+
+
+@clubs_bp.route("/removeAllClubs", methods=["DELETE"])
+@cross_origin()
+def del_all():
+    remove_all_clubs()
+    return "All remove"

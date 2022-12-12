@@ -1,0 +1,26 @@
+###
+POST http://localhost:5000/notifications/create
+Content-Type: application/json
+
+{
+    "content": "Jafar je suis coincé",
+    "email": "jean@matrix.com"
+}
+
+###
+GET http://localhost:5000/notifications
+
+### 
+GET http://localhost:5000/notifications/getNotifications?email_user=jean@matrix.com
+
+###
+#delete all notif CAREFULL!!!!
+DELETE http://localhost:5000/notifications/removeAllNotifications
+
+###
+POST http://localhost:5000/notifications/updateState
+Content-Type: application/json
+
+{
+    "id": "27a0e5ab-6d81-41f8-8804-84df588f8f99"
+}

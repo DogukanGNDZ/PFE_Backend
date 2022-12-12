@@ -67,10 +67,10 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/users/adresses?role=player&email=jeabn@matrix.com
+GET http://localhost:5000/users/adresses?email=jeabn@matrix.com
 
 ###
-GET http://localhost:5000/sports/userSport?role=player&email=jeabn@matrix.com
+GET http://localhost:5000/sports/userSport?email=jeabn@matrix.com
 
 ###
 POST http://localhost:5000/users/applyClub

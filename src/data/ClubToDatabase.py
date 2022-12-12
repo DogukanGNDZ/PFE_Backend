@@ -3,6 +3,7 @@ from flask import make_response
 from src.dto.ClubDTO import *
 import os
 import bcrypt
+import json
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -22,6 +23,8 @@ def create_club(club_dto: ClubDTO):
             'CREATE (c:Club $club_properties) RETURN c', club_properties=asdict(club_dto))
 
         club = result.single().data()['c']
+        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+        club["creation_date"] = json.dumps(date_str)
         club.pop('password', None)
 
         # Return the result of the query
@@ -33,6 +36,8 @@ def fetch_club(id: str):
         result = session.run('MATCH (c:Club) WHERE c.id = $id RETURN c', id=id)
 
         club = result.single().data()['c']
+        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+        club["creation_date"] = json.dumps(date_str)
         club.pop('password', None)
 
         # Return the result of the query
@@ -47,6 +52,8 @@ def fetch_all_clubs():
 
         for club in result:
             c = club.data()['c']
+            date_str = c["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+            c["creation_date"] = json.dumps(date_str)
             c.pop('password', None)
             clubs.append(c)
 
@@ -134,3 +141,8 @@ def remove_member(email_club: str, email_member: str, role: str):
         else:
             session.run(
                 'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+
+
+def remove_all_clubs():
+    with graph.session() as session:
+        session.run('MATCH (c:Club) DELETE c')

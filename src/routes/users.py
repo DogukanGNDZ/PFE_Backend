@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 from src.dto.UserDTO import *
 from src.data.UserToDatabase import *
 from src.data.AdressToDatabase import fetch_user_adress
-from src.routes.auth import authorize
+from src.routes.auth import authorize, get_role
 import uuid
 import bcrypt
 import ast
@@ -77,8 +77,9 @@ def update_data_user():
 @users_bp.route("/adresses", methods=["GET"])
 @cross_origin()
 def get_adress_user():
-    role = request.args.get("role", default="", type=str)
+
     email = request.args.get("email", default="", type=str)
+    role = get_role(email)
     return fetch_user_adress(role, email)
 
 

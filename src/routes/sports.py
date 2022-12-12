@@ -3,6 +3,7 @@ from flask_cors import cross_origin
 
 from src.dto.SportDTO import *
 from src.data.SportToDatabase import *
+from src.routes.auth import get_role
 import uuid
 
 sports_bp = Blueprint("sports", __name__, url_prefix="/sports")
@@ -35,8 +36,9 @@ def create_sport():
 @cross_origin()
 def add_sport_user():
     name = request.json.get('name')
-    role = request.json.get('role')
     email = request.json.get('email')
+    role = get_role(email)
+    print(role)
     nameOldSport = request.json.get('nameOldSport')
     if (update_sport(name, role, email, nameOldSport)):
         return "sport added successfully"
@@ -48,6 +50,7 @@ def add_sport_user():
 @sports_bp.route("/userSport", methods=["GET"])
 @cross_origin()
 def get_adress_user():
-    role = request.args.get("role", default="", type=str)
     email = request.args.get("email", default="", type=str)
+    role = get_role(email)
+    print(role)
     return fetch_user_sport(role, email)
