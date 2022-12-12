@@ -13,11 +13,15 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @users_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_users():
-    id = request.args.get("id", default=1, type=int)
+    id = request.args.get("id", default=1, type=str)
     if (id == 1):
         return fetch_all_users()
-    return fetch_user(id)
+    
+    user = fetch_user(id)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User id not found", 404)
 
 
 # generate a new id
@@ -52,7 +56,10 @@ def get_my_profil():
     claims = authorize(token)
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
-    return fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
+    user = fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
+    
+    if(user is not None): return make_response(user, 200)
+    return make_response("User id not found", 404)
 
 
 @users_bp.route("/update", methods=["PUT"])
@@ -71,7 +78,9 @@ def update_data_user():
     print("avant create user dto")
     user = UserDTO(0, firstname, lastname, age, email, "", size,
                    weight, post, nYE, description, picture)
-    return update_user(user)
+    user = update_user(user)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User not found", 404)
 
 
 @users_bp.route("/adresses", methods=["GET"])

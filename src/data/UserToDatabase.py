@@ -1,16 +1,13 @@
-import json
-from flask import make_response
 from neo4j import GraphDatabase
 from src.dto.UserDTO import *
 import os
 import bcrypt
-import json
 from dotenv import load_dotenv
 from dataclasses import asdict
 
 load_dotenv()
 host = os.getenv("HOST")
-user = os.getenv("USER")
+user = os.getenv("USR")
 password = os.getenv("AUTH")
 
 # Connect to the database
@@ -34,6 +31,7 @@ def fetch_user(id: str):
     with graph.session() as session:
         result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
 
+        if(not result.peek()): return None
         user = result.single().data()['u']
         user.pop('password', None)
 
@@ -44,29 +42,14 @@ def fetch_user(id: str):
 def fetch_user_email(email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email RETURN u, COUNT(u)>0 as d', email=email)
-        if(result.peek()):
-            user = result.single().data()['u']
-            user.pop('password', None)
-            return user
-        else:
-            result = session.run(
-            'MATCH (c:Coach) WHERE c.email = $email RETURN c', email=email)
-            if(result.peek()):
-                        coach = result.single().data()['c']
-                        coach.pop('password', None)
-                        return coach
-            else:
-                 result = session.run(
-                'MATCH (cl:Club) WHERE cl.email = $email RETURN cl', email=email) 
-                 if(result.peek()):
-                        club = result.single().data()['cl']
-                        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
-                        club["creation_date"] = json.dumps(date_str)
-                        club.pop('password', None)
-                        return club
-                 else:
-                    return None               
+            'MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
+
+        user = result.single().data()['u']
+        user.pop('password', None)
+
+        # Return the result of the query
+        return user
+
 
 def check_user(password: str, email: str):
     with graph.session() as session:
@@ -113,29 +96,18 @@ def fetch_all_users():
 
 def check_mail(email: str):
     with graph.session() as session:
-            query = 'MATCH (u:User) WHERE u.email = $email RETURN u'
-            result = session.run(query, email=email)
-            if result.single():
-                # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
-                return True
-            else:
-                query = 'MATCH (c:Coach) WHERE c.email = $email RETURN c'
-                result = session.run(query, email=email)
-                if result.single():
-                    # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
-                    return True
-                else:
-                    query = 'MATCH (cl:Club) WHERE cl.email = $email RETURN cl'
-                    result = session.run(query, email=email)
-                    if result.single():
-                        # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
-                        return True
-                    else:
-                        return False        
+        query = 'MATCH (u:User) WHERE u.email = $email RETURN u'
+        result = session.run(query, email=email)
+        if result.single():
+            # If there is already a user with the given email, return an error make_response(400, {'error': 'Email address is already in use'})
+            return True
+        else:
+            return False
 
 
 def update_user(user_dto: UserDTO):
     with graph.session() as session:
+        print("data")
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
             email=user_dto.email,
@@ -149,11 +121,13 @@ def update_user(user_dto: UserDTO):
             description=user_dto.description,
             picture=user_dto.picture)
 
-        user = result.single().data()['u']
-        user.pop('password', None)
+        if(result.peek()):
+            user = result.single().data()['u']
+            user.pop('password', None)
 
-        # Return the result of the query
-        return user
+            # Return the result of the query
+            return user
+        return None
 
 
 def apply_for_club_user(email_user: str, email_club: str):
@@ -174,12 +148,13 @@ def get_user_club(email_user: str):
 
         for club in result:
             u = club.data()['c']
-            date_str = u["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
-            u["creation_date"] = json.dumps(date_str)
             u.pop('password', None)
             clubs.append(u)
 
         return clubs
+
+def get_user_sport(email_user: str):
+    pass
 
 
 def leave_club(email_user: str, email_club: str):
@@ -198,24 +173,3 @@ def is_member(email_user: str):
 
         club = data["d"]
         return club
-
-
-def get_role_user(email: str):
-    with graph.session() as session:
-        resultPlayer = session.run(
-            'MATCH (u:User) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
-        resultCoach = session.run(
-            'MATCH (u:Coach) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
-        resultClub = session.run(
-            'MATCH (u:Club) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
-        print(resultPlayer)
-        print(resultClub)
-        print(resultCoach)
-        if (resultPlayer):
-            return "player"
-        elif (resultCoach):
-            return "coach"
-        elif (resultClub):
-            return "club"
-        else:
-            return make_response("User not find", 400)

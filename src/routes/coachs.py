@@ -16,6 +16,7 @@ def generate_id():
 
 
 @coachs_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_coachs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
