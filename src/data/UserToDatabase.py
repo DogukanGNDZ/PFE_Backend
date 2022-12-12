@@ -2,6 +2,7 @@ from neo4j import GraphDatabase
 from src.dto.UserDTO import *
 import os
 import bcrypt
+import json
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -41,14 +42,34 @@ def fetch_user(id: str):
 def fetch_user_email(email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
-
-        user = result.single().data()['u']
-        user.pop('password', None)
-
-        # Return the result of the query
-        return user
-
+            'MATCH (u:User) WHERE u.email = $email RETURN u, COUNT(u)>0 as d', email=email)
+        if(result.single()):
+            user = result.single().data()['u']
+            user.pop('password', None)
+            return user
+        else:
+            print("ee")
+            result = session.run(
+            'MATCH (c:Coach) WHERE c.email = $email RETURN c', email=email)
+            if(result.single()):
+                        coach = result.single().data()['c']
+                        coach.pop('password', None)
+                        return coach
+            else:
+                 print("ee")
+                 result = session.run(
+                'MATCH (cl:Club) WHERE cl.email = $email RETURN cl', email=email)
+                 print (result.single().data())
+                 print(email)   
+                 if(result.single()):
+                        print("zehf")
+                        club = result.single().data()['cl']
+                        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+                        club["creation_date"] = json.dumps(date_str)
+                        club.pop('password', None)
+                        return club
+                 else:
+                    return None               
 
 def check_user(password: str, email: str):
     with graph.session() as session:
