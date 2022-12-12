@@ -4,6 +4,7 @@ from neo4j import GraphDatabase
 from src.dto.UserDTO import *
 import os
 import bcrypt
+import json
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -43,14 +44,29 @@ def fetch_user(id: str):
 def fetch_user_email(email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
-
-        user = result.single().data()['u']
-        user.pop('password', None)
-
-        # Return the result of the query
-        return user
-
+            'MATCH (u:User) WHERE u.email = $email RETURN u, COUNT(u)>0 as d', email=email)
+        if(result.peek()):
+            user = result.single().data()['u']
+            user.pop('password', None)
+            return user
+        else:
+            result = session.run(
+            'MATCH (c:Coach) WHERE c.email = $email RETURN c', email=email)
+            if(result.peek()):
+                        coach = result.single().data()['c']
+                        coach.pop('password', None)
+                        return coach
+            else:
+                 result = session.run(
+                'MATCH (cl:Club) WHERE cl.email = $email RETURN cl', email=email) 
+                 if(result.peek()):
+                        club = result.single().data()['cl']
+                        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+                        club["creation_date"] = json.dumps(date_str)
+                        club.pop('password', None)
+                        return club
+                 else:
+                    return None               
 
 def check_user(password: str, email: str):
     with graph.session() as session:
@@ -120,7 +136,6 @@ def check_mail(email: str):
 
 def update_user(user_dto: UserDTO):
     with graph.session() as session:
-        print("data")
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
             email=user_dto.email,

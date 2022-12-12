@@ -5,10 +5,10 @@ Content-Type: application/json
 {
     "lastname" : "marti",
     "firstname" : "jean",
-    "email" : "do@matrix.com",
+    "email" : "jeasduigshgkscb@matrix.com",
     "password" : "yayaya",
     "age" : 16,
-    "role":"user"
+    "role":"club"
 }
 
 ### connection
@@ -16,8 +16,8 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "dog@matrix.com",
-    "password" : "yayaya"
+    "email": "jeahdfushkfsfb@matrix.com",
+    "password" : "marti"
 }
 ###> {% client.global.set("token", response.body) %}
 
