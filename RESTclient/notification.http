@@ -4,7 +4,6 @@ Content-Type: application/json
 
 {
     "content": "Jafar je suis coincé",
-    "role": "coach",
     "email": "jean@matrix.com"
 }
 
@@ -12,7 +11,7 @@ Content-Type: application/json
 GET http://localhost:5000/notifications
 
 ### 
-GET http://localhost:5000/notifications/getNotifications?email_user=jean@matrix.com&role=coach
+GET http://localhost:5000/notifications/getNotifications?email_user=jean@matrix.com
 
 ###
 #delete all notif CAREFULL!!!!

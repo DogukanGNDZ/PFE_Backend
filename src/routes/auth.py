@@ -62,7 +62,7 @@ def confirm_token():
         return response
 
 
-def authorize(token:str):
+def authorize(token: str):
     try:
         # Decode the token using your secret key
         decoded_token = jwt.decode(token, KEY, 'HS256')
@@ -77,3 +77,7 @@ def authorize(token:str):
     except jwt.InvalidTokenError:
         response = make_response("Token is invalid", 498)
         return response
+
+
+def get_role(email: str):
+    return get_role_user(email)

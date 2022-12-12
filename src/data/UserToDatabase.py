@@ -1,3 +1,5 @@
+import json
+from flask import make_response
 from neo4j import GraphDatabase
 from src.dto.UserDTO import *
 import os
@@ -145,6 +147,8 @@ def get_user_club(email_user: str):
 
         for club in result:
             u = club.data()['c']
+            date_str = u["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+            u["creation_date"] = json.dumps(date_str)
             u.pop('password', None)
             clubs.append(u)
 
@@ -167,3 +171,24 @@ def is_member(email_user: str):
 
         club = data["d"]
         return club
+
+
+def get_role_user(email: str):
+    with graph.session() as session:
+        resultPlayer = session.run(
+            'MATCH (u:User) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
+        resultCoach = session.run(
+            'MATCH (u:Coach) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
+        resultClub = session.run(
+            'MATCH (u:Club) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
+        print(resultPlayer)
+        print(resultClub)
+        print(resultCoach)
+        if (resultPlayer):
+            return "player"
+        elif (resultCoach):
+            return "coach"
+        elif (resultClub):
+            return "club"
+        else:
+            return make_response("User not find", 400)

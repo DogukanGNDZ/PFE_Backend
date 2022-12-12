@@ -15,7 +15,6 @@ Content-Type: application/json
 
 {
     "name": "rollers",
-    "role": "player",
     "email": "jeabn@matrix.com",
-    "nameOldSport": "petanque"
+    "nameOldSport": ""
 }

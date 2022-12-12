@@ -56,6 +56,8 @@ def update_sport(sport: str, role: str, email: str, nameOldSport: str):
     with graph.session() as session:
         if (nameOldSport == ""):
             if (role == "player"):
+                print("in")
+                print(email)
                 session.run(
                     'MATCH (p:User) MATCH (s:Sport) WHERE p.email= $email AND s.name = $name CREATE (p)-[rel:PRATIQUE]->(s)', email=email, name=sport)
                 return True
@@ -87,9 +89,12 @@ def update_sport(sport: str, role: str, email: str, nameOldSport: str):
 def fetch_user_sport(role: str, email: str):
     with graph.session() as session:
         if (role == "player"):
+            print("in")
+            print(email)
             result = session.run(
                 'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) WHERE p.email= $email RETURN old', email=email)
             sports = []
+            print(result)
             for sport in result:
                 a = sport.data()['old']
                 sports.append(a)

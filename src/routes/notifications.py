@@ -3,6 +3,7 @@ from flask_cors import cross_origin
 
 from src.dto.NotificationDTO import *
 from src.data.NotificationToDatabase import *
+from src.routes.auth import get_role
 import uuid
 
 notifications_bp = Blueprint(
@@ -27,8 +28,8 @@ def generate_id():
 @cross_origin()
 def create_notification():
     content = request.json.get("content")
-    role = request.json.get("role")
     email = request.json.get("email")
+    role = get_role(email)
     notification = NotificationDTO(
         generate_id(), content, datetime.datetime.now(), "active")
     return create_notification_data(notification, role, email)
@@ -38,7 +39,8 @@ def create_notification():
 @cross_origin()
 def get_user_notif():
     email_user = request.args.get("email_user", default="", type=str)
-    role = request.args.get("role", default="", type=str)
+    role = get_role(email_user)
+    print(role)
     return fetch_user_notification(role, email_user)
 
 
