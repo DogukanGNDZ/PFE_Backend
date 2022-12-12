@@ -15,13 +15,24 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 @users_bp.route("", methods=["GET"])
 @cross_origin()
 def get_all_users():
-    id = request.args.get("id", default=1, type=str)
-    if (id == 1):
+    if (id == "1"):
         return fetch_all_users()
-    
+
+@users_bp.route("/id/<id>", methods=["GET"])
+@cross_origin()
+def get_user_id(id):
     user = fetch_user(id)
     if(user is not None): return make_response(user, 200)
-    return make_response("User id not found", 404)
+    return make_response("User not found", 404)
+
+
+@users_bp.route("/email/<email>", methods=["GET"])
+@cross_origin()
+def get_user_email(email):
+    user = fetch_user_email(email)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User not found", 404)
+
 
 
 # generate a new id
@@ -46,7 +57,7 @@ def register():
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
-        return create_user(user)
+        return make_response(create_user(user), 200)
 
 
 @users_bp.route("/myprofil", methods=["GET"])
@@ -99,7 +110,10 @@ def get_adress_user():
 
     email = request.args.get("email", default="", type=str)
     role = get_role(email)
-    return fetch_user_adress(role, email)
+    if(role is not None):
+        user = fetch_user_adress(role, email)
+        if(user is not None): return make_response(user, 200)
+    return make_response("", 404)
 
 
 @users_bp.route("/applyClub", methods=["POST"])
@@ -116,6 +130,13 @@ def apply_for_club():
 def get_club():
     email_user = request.args.get("email_user", default="", type=str)
     return get_user_club(email_user)
+
+
+@users_bp.route("/userSport", methods=["GET"])
+@cross_origin()
+def get_sport():
+    email_user = request.args.get("email_user", default="", type=str)
+    return get_user_sport(email_user)
 
 
 @users_bp.route("/leaveClub", methods=["DELETE"])

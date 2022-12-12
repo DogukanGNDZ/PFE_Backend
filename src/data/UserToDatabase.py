@@ -19,6 +19,7 @@ def create_user(user_dto: UserDTO):
         # Create the new user in the Neo4j database
         result = session.run(
             'CREATE (u:User $user_properties) RETURN u', user_properties=asdict(user_dto))
+        if(not result.peek()): return None
 
         user = result.single().data()['u']
         user.pop('password', None)
@@ -43,6 +44,8 @@ def fetch_user_email(email: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email RETURN u', email=email)
+        if(not result.peek()): return None
+            
 
         user = result.single().data()['u']
         user.pop('password', None)
@@ -52,9 +55,12 @@ def fetch_user_email(email: str):
 
 
 def check_user(password: str, email: str):
+
     with graph.session() as session:
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email RETURN u LIMIT 1', email=email)
+
+        
         for row in result:
             if (bcrypt.checkpw(password, row['u']['password'])):
                 return True
@@ -121,13 +127,13 @@ def update_user(user_dto: UserDTO):
             description=user_dto.description,
             picture=user_dto.picture)
 
-        if(result.peek()):
-            user = result.single().data()['u']
-            user.pop('password', None)
 
-            # Return the result of the query
-            return user
-        return None
+        if(not result.peek()): return None
+        user = result.single().data()['u']
+        user.pop('password', None)
+
+        # Return the result of the query
+        return user
 
 
 def apply_for_club_user(email_user: str, email_club: str):
@@ -154,7 +160,18 @@ def get_user_club(email_user: str):
         return clubs
 
 def get_user_sport(email_user: str):
-    pass
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (p:User)-[r:PRATIQUE]->(s:Sport) WHERE p.email = $name return s', name=email_user)
+
+        sports = []
+
+        for sport in result:
+            u = sport.data()['s']
+            u.pop('password', None)
+            sports.append(u)
+
+        return sports
 
 
 def leave_club(email_user: str, email_club: str):
@@ -169,6 +186,8 @@ def is_member(email_user: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name RETURN COUNT(r)>0 AS d', name=email_user)
+        
+        if(not result.peek()): return None
         data = result.single().data()
 
         club = data["d"]

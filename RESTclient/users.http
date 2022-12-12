@@ -3,12 +3,12 @@ POST http://localhost:5000/users/register
 Content-Type: application/json
 
 {
-    "lastname" : "MESSI",
-    "firstname" : "GOAT",
-    "email" : "dogb@front.com",
-    "password" : "yayayaya",
+    "lastname" : "marti",
+    "firstname" : "jean",
+    "email" : "jeasduigshgkscb@matrix.com",
+    "password" : "yayaya",
     "age" : 16,
-    "role":"player"
+    "role":"club"
 }
 
 ### connection
@@ -16,8 +16,8 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "dogb@front.com",
-    "password" : "yayayaya"
+    "email": "jeasduigshgkscb@matrix.com",
+    "password" : "yayaya"
 }
 ###> {% client.global.set("token", response.body) %}
 
@@ -27,7 +27,7 @@ POST http://localhost:5000/auth/confirm_token
 Content-Type: application/json
 
 {
-    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwNzU4NTA1fQ.xn6jPw4HW6STttPy7JiNgeMYIw0jZ7XEyYPp2kcf3vE"
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMmQ2ZGY5MTgtYmI0YS00YWY2LTk3NjUtMzY0Y2NmYmNkNzYxIiwiZXhwIjoxNjcwOTQ1NDM4fQ.OtIWhKVAE09G6hvIGtuMX-oD_z9qdfsmY7G3PaibWYc"
 }
 
 ### wrong login
@@ -40,7 +40,9 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/users
+GET http://localhost:5000/users/id/rzeefz
+###
+GET http://localhost:5000/users/email/rzeefz
 
 
 ###
@@ -52,18 +54,17 @@ Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjN
 ###
 PUT http://localhost:5000/users/update
 Content-Type: application/json
-Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQxODIyfQ.9rSBcMhfx_9OPf5Eog2fqQfmGe59Iz4SoQOewwh7qWc
 
 {  
-    "firstname": "MESSI",
-    "lastname": "le GOAT",
-    "email": "dogb@front.com",
+    "firstname": "jean",
+    "lastname": "marti",
+    "email": "jeabn@matrix.com",
     "age": 16,
     "size": 186.9,  
     "weight": 79.9,
     "post":"reserve",
     "number_year_experience": 189,
-    "description": "je suis le GOATTT",
+    "description": "je suis null",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
 }
 
