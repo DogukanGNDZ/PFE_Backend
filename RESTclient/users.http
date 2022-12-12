@@ -7,7 +7,8 @@ Content-Type: application/json
     "firstname" : "jean",
     "email" : "do@matrix.com",
     "password" : "yayaya",
-    "age" : 16
+    "age" : 16,
+    "role":"user"
 }
 
 ### connection
