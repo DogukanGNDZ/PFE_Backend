@@ -16,7 +16,7 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "jeacb@matrix.com",
+    "email": "jeahdfushkfsfb@matrix.com",
     "password" : "marti"
 }
 ###> {% client.global.set("token", response.body) %}

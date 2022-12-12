@@ -34,7 +34,6 @@ def login():
     email = request.json.get('email')
     if check_user(byte_pwd, email):
         get_user = fetch_user_email(email)
-        print(get_user)
         return generate_jwt(get_user["id"])
     else:
         response = make_response("Wrong password", 400)
