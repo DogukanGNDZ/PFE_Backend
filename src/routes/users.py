@@ -13,6 +13,7 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @users_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_users():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):

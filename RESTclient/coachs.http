@@ -3,9 +3,9 @@ POST http://localhost:5000/coachs/register
 Content-Type: application/json
 
 {
-    "lastname" : "marti",
+    "lastname" : "martin LLJ",
     "firstname" : "jean",
-    "email" : "jean@matrix.com",
+    "email" : "jeanhuguhrsg@matrix.com",
     "password" : "yayaya",
     "age" : 16
 }

@@ -3,10 +3,10 @@ POST http://localhost:5000/users/register
 Content-Type: application/json
 
 {
-    "lastname" : "marti",
-    "firstname" : "jean",
-    "email" : "jeasduigshgkscb@matrix.com",
-    "password" : "yayaya",
+    "lastname" : "MESSI",
+    "firstname" : "GOAT",
+    "email" : "dogb@front.com",
+    "password" : "yayayaya",
     "age" : 16,
     "role":"player"
 }
@@ -16,7 +16,7 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "dog@front.com",
+    "email": "dogb@front.com",
     "password" : "yayayaya"
 }
 ###> {% client.global.set("token", response.body) %}
@@ -52,18 +52,18 @@ Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjN
 ###
 PUT http://localhost:5000/users/update
 Content-Type: application/json
-Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiME4NmJlZjUtZGE0Ni00MDExLWFhNTYtNzg2ZjQyMmIyNjkzIiwiZXhwIjoxNjcwOTM5NTg0fQ.VmiY-fL1cIX7QMUlXX2Ypbs9EwecI3I18RK6ChtNy8g
+Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQxODIyfQ.9rSBcMhfx_9OPf5Eog2fqQfmGe59Iz4SoQOewwh7qWc
 
 {  
-    "firstname": "jean",
-    "lastname": "martidf",
-    "email": "dog@front.com",
+    "firstname": "MESSI",
+    "lastname": "le GOAT",
+    "email": "dogb@front.com",
     "age": 16,
     "size": 186.9,  
     "weight": 79.9,
     "post":"reserve",
     "number_year_experience": 189,
-    "description": "je suis null",
+    "description": "je suis le GOATTT",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
 }
 
