@@ -10,3 +10,18 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/notifications
+
+### 
+GET http://localhost:5000/notifications/getNotifications?email_user=jean@matrix.com&role=coach
+
+###
+#delete all notif CAREFULL!!!!
+DELETE http://localhost:5000/notifications/removeAllNotifications
+
+###
+POST http://localhost:5000/notifications/updateState
+Content-Type: application/json
+
+{
+    "id": "27a0e5ab-6d81-41f8-8804-84df588f8f99"
+}

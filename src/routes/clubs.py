@@ -77,3 +77,10 @@ def remove_member_club():
     role = request.json.get('role')
     remove_member(email_club, email_member, role)
     return "Member remove"
+
+
+@clubs_bp.route("/removeAllClubs", methods=["DELETE"])
+@cross_origin()
+def del_all():
+    remove_all_clubs()
+    return "All remove"

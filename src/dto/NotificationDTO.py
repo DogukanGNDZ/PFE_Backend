@@ -7,3 +7,4 @@ class NotificationDTO:
     id: str
     content: str
     date_and_time: datetime
+    etat: str

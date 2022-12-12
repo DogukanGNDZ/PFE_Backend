@@ -2,6 +2,7 @@ from neo4j import GraphDatabase
 from flask import make_response
 from src.dto.NotificationDTO import *
 import os
+import json
 from dotenv import load_dotenv
 from dataclasses import asdict
 
@@ -30,6 +31,8 @@ def create_notification_data(notification_dto: NotificationDTO, role: str, email
                 'MATCH (u:Club),(n:Notification) WHERE u.email = $email AND n.id = $id CREATE (u)-[rel:HAS_RECEIVED]->(n)', email=email, id=notification_dto.id)
 
         notif = result.single().data()['n']
+        date_str = notif["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+        notif["date_and_time"] = json.dumps(date_str)
         return notif
 
 
@@ -39,7 +42,8 @@ def fetch_notification(id: str):
             'MATCH (n:Notification) WHERE n.id = $id RETURN n', id=id)
 
         notif = result.single().data()['n']
-
+        date_str = notif["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+        notif["date_and_time"] = json.dumps(date_str)
         # Return the result of the query
         return notif
 
@@ -52,6 +56,8 @@ def fetch_all_notification():
 
         for notif in result:
             n = notif.data()['n']
+            date_str = n["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+            n["date_and_time"] = json.dumps(date_str)
             notifications.append(n)
 
         # Return the result of the query
@@ -66,6 +72,8 @@ def fetch_user_notification(role: str, email: str):
             notifications = []
             for notif in result:
                 n = notif.data()['n']
+                date_str = n["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+                n["date_and_time"] = json.dumps(date_str)
                 notifications.append(n)
             return notifications
         elif (role == "coach"):
@@ -74,6 +82,8 @@ def fetch_user_notification(role: str, email: str):
             notifications = []
             for notif in result:
                 n = notif.data()['n']
+                date_str = n["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+                n["date_and_time"] = json.dumps(date_str)
                 notifications.append(n)
             return notifications
         elif (role == "club"):
@@ -82,7 +92,31 @@ def fetch_user_notification(role: str, email: str):
             notifications = []
             for notif in result:
                 n = notif.data()['n']
+                date_str = n["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+                n["date_and_time"] = json.dumps(date_str)
                 notifications.append(n)
             return notifications
         else:
             return []
+
+
+def remove_all_notifications():
+    with graph.session() as session:
+        session.run(
+            'MATCH (p:User)-[r:HAS_RECEIVED]->(n:Notification) DELETE r')
+        session.run(
+            'MATCH (p:Coach)-[r:HAS_RECEIVED]->(n:Notification) DELETE r')
+        session.run(
+            'MATCH (p:Club)-[r:HAS_RECEIVED]->(n:Notification) DELETE r')
+        session.run('MATCH (n:Notification) DELETE n')
+
+
+def update_notification_etat(id: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (n:Notification) WHERE n.id= $id SET n.etat="delete" RETURN n', id=id)
+        notif = result.single().data()['n']
+        date_str = notif["date_and_time"].strftime('%Y-%m-%d %H:%M:%S')
+        notif["date_and_time"] = json.dumps(date_str)
+        # Return the result of the query
+        return notif

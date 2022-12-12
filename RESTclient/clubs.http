@@ -52,3 +52,6 @@ Content-Type: application/json
     "role" : "coach",
     "email_club" : "jeab@matrix.com"
 }
+
+###
+DELETE http://localhost:5000/clubs/removeAllClubs
