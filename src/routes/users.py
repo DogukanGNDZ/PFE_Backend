@@ -15,8 +15,10 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 @users_bp.route("", methods=["GET"])
 @cross_origin()
 def get_all_users():
-    if (id == "1"):
+    id = request.args.get("id", default="", type=str)
+    if (id == ""):
         return fetch_all_users()
+    return fetch_user(id)
 
 
 @users_bp.route("/id/<id>", methods=["GET"])
@@ -167,7 +169,9 @@ def check_is_member():
 def serach_user():
     sport = request.args.get("sport", default="", type=str)
     role = request.args.get("role", default="", type=str)
-    age = request.args.get("age", default="", type=int)
+    age = request.args.get("age", default=0, type=int)
     country = request.args.get("country", default="", type=str)
     city = request.args.get("city", default="", type=str)
     name = request.args.get("name", default="", type=str)
+    print("befor")
+    return search_user_data(role, sport, age, country, city, name)

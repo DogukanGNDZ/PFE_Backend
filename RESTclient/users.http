@@ -54,10 +54,7 @@ Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjN
 ###
 PUT http://localhost:5000/users/update
 Content-Type: application/json
-<<<<<<< HEAD
-=======
 Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQ1NDI0fQ.9bAeMXB4E5vRlwp3hi6I9Vop0x2fIIbh_YaSgyyRH-U
->>>>>>> 6833c2aa48d0174089d8599a731b3c7aedcf256c
 
 {  
     "firstname": "jean",
@@ -101,3 +98,10 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:5000/users/isMember?email_user=jeabn@matrix.com
+
+
+###
+GET http://localhost:5000/users/searchUser?role=player&name=
+
+###
+GET http://localhost:5000/users
