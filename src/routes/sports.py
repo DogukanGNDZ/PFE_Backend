@@ -40,7 +40,6 @@ def add_sport_user():
     name = request.json.get('name')
     email = request.json.get('email')
     role = get_role(email)
-    print(role)
     nameOldSport = request.json.get('nameOldSport')
     if (update_sport(name, role, email, nameOldSport)):
         return "sport added successfully"
@@ -51,8 +50,7 @@ def add_sport_user():
 
 @sports_bp.route("/userSport", methods=["GET"])
 @cross_origin()
-def get_adress_user():
+def get_sport_user():
     email = request.args.get("email", default="", type=str)
     role = get_role(email)
-    print(role)
     return fetch_user_sport(role, email)

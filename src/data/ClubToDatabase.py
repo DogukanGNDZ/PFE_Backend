@@ -148,3 +148,16 @@ def remove_member(email_club: str, email_member: str, role: str):
 def remove_all_clubs():
     with graph.session() as session:
         session.run('MATCH (n) DETACH DELETE n')
+
+
+def get_team_clubs(email_club: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (t:Team)-[r:TEAM_DE]->(c:Club) WHERE c.email = $name return t', name=email_club)
+        teams = []
+
+        for team in result:
+            t = team.data()['t']
+            teams.append(t)
+
+        return teams

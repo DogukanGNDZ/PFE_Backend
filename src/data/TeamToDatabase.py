@@ -15,12 +15,13 @@ password = os.getenv("AUTH")
 graph = GraphDatabase.driver(host, auth=(user, password))
 
 
-def create_team(team_dto: TeamDTO):
+def create_team(team_dto: TeamDTO, email_club: str):
     with graph.session() as session:
         # Create the new user in the Neo4j database
         result = session.run(
             'CREATE (t:Team $team_properties) RETURN t', team_properties=asdict(team_dto))
-
+        session.run(
+            'MATCH (t:Team),(c:Club) WHERE t.id = $id AND c.email = $email SET c.number_teams = c.number_teams+1 CREATE (t)-[r:TEAM_DE]->(c)', id=team_dto.id, email=email_club)
         team = result.single().data()['t']
 
         # Return the result of the query
@@ -52,17 +53,32 @@ def fetch_all_teams():
         # Return the result of the query
         return teams
 
+
 def add(team_id: str, email: str):
     with graph.session() as session:
-        result = session.run('MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email = email, team_id = team_id)
+        result = session.run(
+            'MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
 
-        if(result.peek()): return True
-        else: return False
+        if (result.peek()):
+            return True
+        else:
+            return False
+
 
 def remove(team_id: str, email: str):
     with graph.session() as session:
+<<<<<<< HEAD
         result = session.run('MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email = email, team_id = team_id)
         
         if(result.peek()): return True
         else: return False
 
+=======
+        result = session.run(
+            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email=email, team_id=team_id)
+
+        if (result.peek()):
+            return True
+        else:
+            return False
+>>>>>>> 02a7cfccbc58e83297f8e7ea4311dc7c1655ce19
