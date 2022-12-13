@@ -233,9 +233,7 @@ def get_role_user(email: str):
             'MATCH (u:Coach) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
         resultClub = session.run(
             'MATCH (u:Club) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
-        print(resultPlayer)
-        print(resultClub)
-        print(resultCoach)
+
         if (resultPlayer):
             return "player"
         elif (resultCoach):
