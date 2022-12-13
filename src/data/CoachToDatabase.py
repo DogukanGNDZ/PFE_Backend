@@ -94,3 +94,25 @@ def is_member(email_coach: str):
 
         club = data["d"]
         return club
+
+
+def update_coach(coach_dto: CoachDTO):
+    with graph.session() as session:
+        print("data")
+        result = session.run(
+            'MATCH (u:Coach) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
+            email=coach_dto.email,
+            firstname=coach_dto.firstname,
+            lastname=coach_dto.lastname,
+            age=coach_dto.age,
+            nYE=coach_dto.number_year_experience,
+            description=coach_dto.description,
+            picture=coach_dto.picture)
+
+        if (not result.peek()):
+            return None
+        coach = result.single().data()['u']
+        coach.pop('password', None)
+
+        # Return the result of the query
+        return coach

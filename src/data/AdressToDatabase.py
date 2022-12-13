@@ -24,24 +24,22 @@ def create_adress_data(adress_dto: AdressDTO, email: str, role: str, idOldAdress
         if (idOldAdress == ""):
             if (role == "player"):
                 session.run(
+                    'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                )
+                session.run(
                     'MATCH (p:User) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
             elif (role == "coach"):
+                session.run(
+                    'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                )
                 session.run(
                     'MATCH (p:Coach) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
             elif (role == "club"):
                 session.run(
+                    'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                )
+                session.run(
                     'MATCH (p:Club) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
-        else:
-            if (role == "player"):
-                session.run(
-                    'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
-            elif (role == "coach"):
-                session.run(
-                    'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
-            elif (role == "club"):
-                session.run(
-                    'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
-        # Return the result of the query
 
         return adress
 
