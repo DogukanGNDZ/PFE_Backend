@@ -15,7 +15,8 @@ def get_all_adresses():
     if (id == ""):
         return fetch_all_adress()
     address = fetch_adress(id)
-    if(address is not None): return make_response(address, 200)
+    if (address is not None):
+        return make_response(address, 200)
     return make_response("", 404)
 
 # generate a new id
@@ -35,6 +36,5 @@ def create_adress():
     country = request.json.get('country')
     email = request.json.get('email')
     role = get_role(email)
-    idOldAdress = request.json.get('idOldAdress')
     adress = AdressDTO(generate_id(), street, number, city, country)
-    return create_adress_data(adress, email, role, idOldAdress)
+    return create_adress_data(adress, email, role)
