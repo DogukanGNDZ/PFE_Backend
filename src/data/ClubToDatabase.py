@@ -9,7 +9,7 @@ from dataclasses import asdict
 
 load_dotenv()
 host = os.getenv("HOST")
-user = os.getenv("USER")
+user = os.getenv("USR")
 password = os.getenv("AUTH")
 
 # Connect to the database
