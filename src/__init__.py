@@ -10,6 +10,7 @@ from src.routes.auth import auth_bp
 from src.routes.notifications import notifications_bp
 
 
+
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(users_bp)

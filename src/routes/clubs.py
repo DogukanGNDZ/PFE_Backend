@@ -25,7 +25,10 @@ def get_all_clubs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_clubs()
-    return fetch_club(id)
+
+    club = fetch_club(id)
+    if(club is not None): return make_response(club, 200)
+    return make_response("Club not found", 404)
 
 
 @clubs_bp.route("/register", methods=["POST"])

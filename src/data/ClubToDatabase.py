@@ -35,6 +35,8 @@ def fetch_club(id: str):
     with graph.session() as session:
         result = session.run('MATCH (c:Club) WHERE c.id = $id RETURN c', id=id)
 
+        if(not result.peek()): return None
+
         club = result.single().data()['c']
         date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
         club["creation_date"] = json.dumps(date_str)
@@ -159,3 +161,21 @@ def get_team_clubs(email_club: str):
             teams.append(t)
 
         return teams
+
+
+def update_club(club_dto: ClubDTO):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (u:User) WHERE u.email = $email SET u.name = $name, u.description = $description, u.picture = $picture RETURN u',
+            email=club_dto.email,
+            name=club_dto.name,
+            description=club_dto.description,
+            picture=club_dto.picture)
+
+        if (not result.peek()):
+            return None
+        user = result.single().data()['u']
+        user.pop('password', None)
+
+        # Return the result of the query
+        return user
