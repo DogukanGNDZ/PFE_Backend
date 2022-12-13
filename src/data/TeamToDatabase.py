@@ -55,7 +55,7 @@ def fetch_all_teams():
         return teams
 
 
-def add(team_id: str, email: str):
+def add_player(team_id: str, email: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
@@ -66,10 +66,12 @@ def add(team_id: str, email: str):
             return False
 
 
-def remove(team_id: str, email: str):
+def remove_player(team_id: str, email: str):
     with graph.session() as session:
-        result = session.run('MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email = email, team_id = team_id)
-        
-        if(result.peek()): return True
-        else: return False
+        result = session.run(
+            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email=email, team_id=team_id)
 
+        if (result.peek()):
+            return True
+        else:
+            return False

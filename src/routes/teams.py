@@ -34,26 +34,26 @@ def create():
     return create_team(team, email_club)
 
 
-@teams_bp.route("/add", methods=["POST"])
+@teams_bp.route("/add", methods=["PUT"])
 @cross_origin()
-def add_player():
+def put_player():
 
     player = request.json.get('player')
     team = request.json.get('team')
 
-    if (add(team, player)):
+    if (add_player(team, player)):
         return make_response("", 200)
     else:
         return make_response("", 404)
 
 
-@teams_bp.route("/remove", methods=["POST"])
+@teams_bp.route("/remove", methods=["DELETE"])
 @cross_origin()
-def remove_player():
+def delete_player():
 
     player = request.json.get('player')
     team = request.json.get('team')
 
-    if (remove(team, player)):
+    if (remove_player(team, player)):
         return make_response("", 200)
     return make_response("", 404)
