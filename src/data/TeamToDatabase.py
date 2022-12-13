@@ -21,7 +21,7 @@ def create_team(team_dto: TeamDTO, email_club: str):
         result = session.run(
             'CREATE (t:Team $team_properties) RETURN t', team_properties=asdict(team_dto))
         session.run(
-            'MATCH (t:Team),(c:Club) WHERE t.id = $id AND c.email = $email CREATE (t)-[r:TEAM_DE]->(c)', id=team_dto.id, email=email_club)
+            'MATCH (t:Team),(c:Club) WHERE t.id = $id AND c.email = $email SET c.number_teams = c.number_teams+1 CREATE (t)-[r:TEAM_DE]->(c)', id=team_dto.id, email=email_club)
         team = result.single().data()['t']
 
         # Return the result of the query
