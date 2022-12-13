@@ -3,6 +3,7 @@ from flask_cors import cross_origin
 
 from src.dto.CoachDTO import *
 from src.data.CoachToDatabase import *
+from src.data.UserToDatabase import *
 import uuid
 import bcrypt
 
@@ -16,6 +17,7 @@ def generate_id():
 
 
 @coachs_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_coachs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
@@ -37,7 +39,10 @@ def register():
     email = request.json.get('email')
     coach = CoachDTO(generate_id(), firstname, lastname,
                      age, email, pwd_hash, 0, "", "")
-    return create_coach(coach)
+    if (check_mail(email)):
+        return make_response("Email already use", 400)
+    else:                 
+        return create_coach(coach)
 
 
 @coachs_bp.route("/applyClub", methods=["POST"])

@@ -145,4 +145,4 @@ def remove_member(email_club: str, email_member: str, role: str):
 
 def remove_all_clubs():
     with graph.session() as session:
-        session.run('MATCH (c:Club) DELETE c')
+        session.run('MATCH (n) DETACH DELETE n')

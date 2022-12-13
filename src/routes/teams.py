@@ -38,8 +38,8 @@ def add_player():
     player = request.json.get('player')
     team = request.json.get('team')
 
-    add(team, player)
-    return ('', 200)
+    if(add(team, player)): return make_response("", 200)
+    else: return make_response("", 404)
 
 @teams_bp.route("/remove", methods=["POST"])
 @cross_origin()
@@ -48,5 +48,6 @@ def remove_player():
     player = request.json.get('player')
     team = request.json.get('team')
 
-    remove(team, player)
-    return ('', 200)
+    if(remove(team, player)): return make_response("", 200)
+    return make_response("", 404)
+

@@ -6,6 +6,7 @@ from src.data.ClubToDatabase import *
 import uuid
 import bcrypt
 import datetime
+from src.data.UserToDatabase import *
 from src.routes.auth import get_role
 
 clubs_bp = Blueprint("clubs", __name__, url_prefix="/clubs")
@@ -35,7 +36,10 @@ def register():
     email = request.json.get('email')
     club = ClubDTO(generate_id(), name, email, pwd_hash,
                    "", 0, datetime.datetime.now(), "")
-    return create_club(club)
+    if (check_mail(email)):
+        return make_response("Email already use", 400)
+    else:               
+        return create_club(club)
 
 
 @clubs_bp.route("/memberRequests", methods=["GET"])

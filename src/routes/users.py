@@ -13,11 +13,26 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @users_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_users():
-    id = request.args.get("id", default=1, type=int)
-    if (id == 1):
+    if (id == "1"):
         return fetch_all_users()
-    return fetch_user(id)
+
+@users_bp.route("/id/<id>", methods=["GET"])
+@cross_origin()
+def get_user_id(id):
+    user = fetch_user(id)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User not found", 404)
+
+
+@users_bp.route("/email/<email>", methods=["GET"])
+@cross_origin()
+def get_user_email(email):
+    user = fetch_user_email(email)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User not found", 404)
+
 
 
 # generate a new id
@@ -42,7 +57,7 @@ def register():
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
-        return create_user(user)
+        return make_response(create_user(user), 200)
 
 
 @users_bp.route("/myprofil", methods=["GET"])
@@ -52,12 +67,20 @@ def get_my_profil():
     claims = authorize(token)
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
-    return fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
+    user = fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
+    
+    if(user is not None): return make_response(user, 200)
+    return make_response("User id not found", 404)
 
 
 @users_bp.route("/update", methods=["PUT"])
 @cross_origin()
 def update_data_user():
+    token = request.headers.get('Authorize')
+    claims = authorize(token);
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+    
     firstname = request.json.get('firstname')
     lastname = request.json.get('lastname')
     email = request.json.get('email')
@@ -68,10 +91,16 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
-    print("avant create user dto")
+    
+    id=fetch_user_email(email)["id"]
+    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"]!=id:
+        return make_response('Not authorized', 401)
+
     user = UserDTO(0, firstname, lastname, age, email, "", size,
                    weight, post, nYE, description, picture)
-    return update_user(user)
+    user = update_user(user)
+    if(user is not None): return make_response(user, 200)
+    return make_response("User not found", 404)
 
 
 @users_bp.route("/adresses", methods=["GET"])
@@ -80,7 +109,10 @@ def get_adress_user():
 
     email = request.args.get("email", default="", type=str)
     role = get_role(email)
-    return fetch_user_adress(role, email)
+    if(role is not None):
+        user = fetch_user_adress(role, email)
+        if(user is not None): return make_response(user, 200)
+    return make_response("", 404)
 
 
 @users_bp.route("/applyClub", methods=["POST"])
@@ -97,6 +129,13 @@ def apply_for_club():
 def get_club():
     email_user = request.args.get("email_user", default="", type=str)
     return get_user_club(email_user)
+
+
+@users_bp.route("/userSport", methods=["GET"])
+@cross_origin()
+def get_sport():
+    email_user = request.args.get("email_user", default="", type=str)
+    return get_user_sport(email_user)
 
 
 @users_bp.route("/leaveClub", methods=["DELETE"])
