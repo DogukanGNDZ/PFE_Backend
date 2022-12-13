@@ -1,8 +1,8 @@
 import datetime
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
-from PFE_Backend.src.data.NotificationToDatabase import create_notification_data
-from PFE_Backend.src.dto.NotificationDTO import NotificationDTO
+from src.data.NotificationToDatabase import create_notification_data
+from src.dto.NotificationDTO import NotificationDTO
 
 from src.dto.CoachDTO import *
 from src.data.CoachToDatabase import *
