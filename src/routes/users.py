@@ -18,11 +18,13 @@ def get_all_users():
     if (id == "1"):
         return fetch_all_users()
 
+
 @users_bp.route("/id/<id>", methods=["GET"])
 @cross_origin()
 def get_user_id(id):
     user = fetch_user(id)
-    if(user is not None): return make_response(user, 200)
+    if (user is not None):
+        return make_response(user, 200)
     return make_response("User not found", 404)
 
 
@@ -30,9 +32,9 @@ def get_user_id(id):
 @cross_origin()
 def get_user_email(email):
     user = fetch_user_email(email)
-    if(user is not None): return make_response(user, 200)
+    if (user is not None):
+        return make_response(user, 200)
     return make_response("User not found", 404)
-
 
 
 # generate a new id
@@ -68,8 +70,9 @@ def get_my_profil():
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
     user = fetch_user(ast.literal_eval(claims.data.decode('utf-8'))["user_id"])
-    
-    if(user is not None): return make_response(user, 200)
+
+    if (user is not None):
+        return make_response(user, 200)
     return make_response("User id not found", 404)
 
 
@@ -77,10 +80,10 @@ def get_my_profil():
 @cross_origin()
 def update_data_user():
     token = request.headers.get('Authorize')
-    claims = authorize(token);
+    claims = authorize(token)
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
-    
+
     firstname = request.json.get('firstname')
     lastname = request.json.get('lastname')
     email = request.json.get('email')
@@ -91,15 +94,16 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
-    
-    id=fetch_user_email(email)["id"]
-    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"]!=id:
+
+    id = fetch_user_email(email)["id"]
+    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = UserDTO(0, firstname, lastname, age, email, "", size,
                    weight, post, nYE, description, picture)
     user = update_user(user)
-    if(user is not None): return make_response(user, 200)
+    if (user is not None):
+        return make_response(user, 200)
     return make_response("User not found", 404)
 
 
@@ -109,9 +113,10 @@ def get_adress_user():
 
     email = request.args.get("email", default="", type=str)
     role = get_role(email)
-    if(role is not None):
+    if (role is not None):
         user = fetch_user_adress(role, email)
-        if(user is not None): return make_response(user, 200)
+        if (user is not None):
+            return make_response(user, 200)
     return make_response("", 404)
 
 
@@ -155,3 +160,14 @@ def check_is_member():
         return "Is member"
     else:
         return "Not a member"
+
+
+@users_bp.route("/searchUser", methods=["GET"])
+@cross_origin()
+def serach_user():
+    sport = request.args.get("sport", default="", type=str)
+    role = request.args.get("role", default="", type=str)
+    age = request.args.get("age", default="", type=int)
+    country = request.args.get("country", default="", type=str)
+    city = request.args.get("city", default="", type=str)
+    name = request.args.get("name", default="", type=str)

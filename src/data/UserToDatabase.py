@@ -222,3 +222,22 @@ def is_member(email_user: str):
 
         club = data["d"]
         return club
+
+
+def search_user_data(role: str, sport: str, age: int, country: str, city: str, name: str):
+    with graph.session() as session:
+        if (role == "player"):
+            result = session.run('MATCH (u:User) return u')
+            users = []
+            for user in result:
+                u = user.data()['u']
+                u.pop('password', None)
+                users.append(u)
+
+            if (sport != ""):
+                users_sports = []
+                for user in users:
+                    result = session.run(
+                        'MATCH (u:User)-[r:PRATIQUE]->(old:Sport) WHERE u.email = $email AND old.name = $name RETURN COUNT(r)>0 AS d', email=user["email"], name=sport)
+                    if (result["d"]):
+                        users_sports.append(user)
