@@ -68,7 +68,7 @@ def fetch_user_notification(role: str, email: str):
     with graph.session() as session:
         if (role == "player"):
             result = session.run(
-                'MATCH (p:User)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email RETURN n', email=email)
+                'MATCH (p:User)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email AND n.etat="active" RETURN n', email=email)
             notifications = []
             for notif in result:
                 n = notif.data()['n']
@@ -78,7 +78,7 @@ def fetch_user_notification(role: str, email: str):
             return notifications
         elif (role == "coach"):
             result = session.run(
-                'MATCH (p:Coach)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email RETURN n', email=email)
+                'MATCH (p:Coach)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email AND n.etat="active" RETURN n', email=email)
             notifications = []
             for notif in result:
                 n = notif.data()['n']
@@ -88,7 +88,7 @@ def fetch_user_notification(role: str, email: str):
             return notifications
         elif (role == "club"):
             result = session.run(
-                'MATCH (p:Club)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email RETURN n', email=email)
+                'MATCH (p:Club)-[r:HAS_RECEIVED]->(n:Notification) WHERE p.email= $email AND n.etat="active" RETURN n', email=email)
             notifications = []
             for notif in result:
                 n = notif.data()['n']

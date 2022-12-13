@@ -1,5 +1,8 @@
+import datetime
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
+from PFE_Backend.src.data.NotificationToDatabase import create_notification_data
+from PFE_Backend.src.dto.NotificationDTO import NotificationDTO
 
 from src.dto.CoachDTO import *
 from src.data.CoachToDatabase import *
@@ -41,7 +44,7 @@ def register():
                      age, email, pwd_hash, 0, "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
-    else:                 
+    else:
         return create_coach(coach)
 
 
@@ -51,6 +54,9 @@ def apply_for_club():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
     apply_for_club_coach(email_coach, email_club)
+    notification_club = NotificationDTO(
+        generate_id(), "Nouvelle demande d'inscription : Coach", datetime.datetime.now(), "active")
+    create_notification_data(notification_club, "club", email_club)
     return "Request send"
 
 
@@ -67,6 +73,13 @@ def leave_club_coach():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
     leave_club(email_coach, email_club)
+    message = "un coach à quitté votre club, email coach = " + email_coach
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez quitté votre club", datetime.datetime.now(), "active")
+    notification_club = NotificationDTO(
+        generate_id(), message, datetime.datetime.now(), "active")
+    create_notification_data(notification_user, "coach", email_coach)
+    create_notification_data(notification_club, "club", email_club)
     return "Request leave successfully"
 
 

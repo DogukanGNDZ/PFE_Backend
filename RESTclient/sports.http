@@ -3,7 +3,7 @@ POST http://localhost:5000/sports/create
 Content-Type: application/json
 
 {
-    "name": "rollers"
+    "name": "course e pied"
 }
 
 ###
