@@ -42,7 +42,7 @@ Content-Type: application/json
 ###
 GET http://localhost:5000/users/id/rzeefz
 ###
-GET http://localhost:5000/users/email/rzeefz
+GET http://localhost:5000/users/email/illls@matrix.com
 
 
 ###
@@ -105,3 +105,6 @@ GET http://localhost:5000/users/searchUser?role=player&name=mar&country=Listembo
 
 ###
 GET http://localhost:5000/users
+
+###
+GET http://localhost:5000/auth/getRole?email_user=illls@matrix.com

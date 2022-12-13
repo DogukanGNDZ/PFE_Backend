@@ -62,6 +62,13 @@ def confirm_token():
         return response
 
 
+@auth_bp.route("/getRole", methods=["GET"])
+@cross_origin()
+def getRole():
+    email_user = request.args.get("email_user", default="", type=str)
+    return get_role(email_user)
+
+
 def authorize(token: str):
     try:
         # Decode the token using your secret key
