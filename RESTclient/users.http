@@ -40,6 +40,9 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:5000/users/id/rzeefz
+###
+GET http://localhost:5000/users/email/illls@matrix.com
 GET http://localhost:5000/users
 
 
@@ -71,7 +74,7 @@ Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyO
 GET http://localhost:5000/users/adresses?email=jeabn@matrix.com
 
 ###
-GET http://localhost:5000/sports/userSport?email=jeabn@matrix.com
+GET http://localhost:5000/sports/userSport?email=jerome1@gmail.com
 
 ###
 POST http://localhost:5000/users/applyClub
@@ -99,7 +102,10 @@ GET http://localhost:5000/users/isMember?email_user=jeabn@matrix.com
 
 
 ###
-GET http://localhost:5000/users/searchUser?role=player&name=
+GET http://localhost:5000/users/searchUser?role=player&name=mar&country=Listembour
 
 ###
 GET http://localhost:5000/users
+
+###
+GET http://localhost:5000/auth/getRole?email_user=illls@matrix.com

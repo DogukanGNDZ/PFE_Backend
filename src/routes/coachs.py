@@ -1,5 +1,8 @@
+import datetime
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
+from src.data.NotificationToDatabase import create_notification_data
+from src.dto.NotificationDTO import NotificationDTO
 
 from src.dto.CoachDTO import *
 from src.data.CoachToDatabase import *
@@ -22,7 +25,10 @@ def get_all_coachs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_coachs()
-    return fetch_coach(id)
+
+    coach = fetch_coach(id)
+    if(coach is not None): return make_response(coach, 200)
+    return make_response("Coach not found", 404)
 
 
 @coachs_bp.route("/register", methods=["POST"])
@@ -41,7 +47,7 @@ def register():
                      age, email, pwd_hash, 0, "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
-    else:                 
+    else:
         return create_coach(coach)
 
 
@@ -51,6 +57,9 @@ def apply_for_club():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
     apply_for_club_coach(email_coach, email_club)
+    notification_club = NotificationDTO(
+        generate_id(), "Nouvelle demande d'inscription : Coach", datetime.datetime.now(), "active")
+    create_notification_data(notification_club, "club", email_club)
     return "Request send"
 
 
@@ -66,8 +75,16 @@ def get_club():
 def leave_club_coach():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
-    leave_club(email_coach, email_club)
-    return "Request leave successfully"
+    left = leave_club(email_coach, email_club)
+    if(not left): return make_response("", 404)
+    message = "un coach à quitté votre club, email coach = " + email_coach
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez quitté votre club", datetime.datetime.now(), "active")
+    notification_club = NotificationDTO(
+        generate_id(), message, datetime.datetime.now(), "active")
+    create_notification_data(notification_user, "coach", email_coach)
+    create_notification_data(notification_club, "club", email_club)
+    return make_response("Request leave successfully", 200)
 
 
 @coachs_bp.route("/isMember", methods=["GET"])

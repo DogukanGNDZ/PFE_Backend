@@ -1,3 +1,4 @@
+import json
 from flask import make_response
 from neo4j import GraphDatabase
 from src.dto.UserDTO import *
@@ -233,9 +234,7 @@ def get_role_user(email: str):
             'MATCH (u:Coach) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
         resultClub = session.run(
             'MATCH (u:Club) WHERE u.email = $email RETURN COUNT(u)>0 AS d', email=email).single().data()["d"]
-        print(resultPlayer)
-        print(resultClub)
-        print(resultCoach)
+
         if (resultPlayer):
             return "player"
         elif (resultCoach):
@@ -250,7 +249,6 @@ def search_user_data(role: str, sport: str, age: int, country: str, city: str, n
     with graph.session() as session:
         print("in")
         if (role == "player"):
-            print("player")
             result = session.run('MATCH (u:User) return u')
             users = []
             for user in result:
@@ -266,23 +264,18 @@ def search_user_data(role: str, sport: str, age: int, country: str, city: str, n
                             'MATCH (u:User)-[r:PRATIQUE]->(old:Sport) WHERE u.email = $email AND old.name = $name RETURN COUNT(r)>0 AS d', email=user["email"], name=sport).single().data()["d"]):
                         users_sports.append(user)
                 users = users_sports
-            print(users)
             if (age > 0):
                 users_ages = []
                 for user in users:
                     if (user["age"] == age):
                         users_ages.append(user)
                 users = users_ages
-            print("2")
-            print(users)
             if (name != ""):
                 users_names = []
                 for user in users:
-                    if (session.run("MATCH (u:User) WHERE (u.lastname =~ '.*$name.*' OR u.firstname =~ '.*$name.*') AND u.email = $email RETURN COUNT(u)>0 AS d", name=name, email=user["email"]).single().data()["d"]):
+                    if (session.run('MATCH (u:User) WHERE (u.lastname STARTS WITH $name OR u.firstname STARTS WITH $name) AND u.email = $email RETURN COUNT(u)>0 AS d', name=name, email=user["email"]).single().data()["d"]):
                         users_names.append(user)
                 users = users_names
-            print("name")
-            print(users)
             if (country != ""):
                 users_country = []
                 for user in users:
@@ -297,5 +290,82 @@ def search_user_data(role: str, sport: str, age: int, country: str, city: str, n
                         users_city.append(user)
                 users = users_city
             return users
+
+        elif (role == "coach"):
+            result = session.run('MATCH (u:Coach) return u')
+            users = []
+            for user in result:
+                u = user.data()['u']
+                u.pop('password', None)
+                users.append(u)
+
+            if (sport != ""):
+                users_sports = []
+                for user in users:
+
+                    if (session.run(
+                            'MATCH (u:Coach)-[r:PRATIQUE]->(old:Sport) WHERE u.email = $email AND old.name = $name RETURN COUNT(r)>0 AS d', email=user["email"], name=sport).single().data()["d"]):
+                        users_sports.append(user)
+                users = users_sports
+            if (age > 0):
+                users_ages = []
+                for user in users:
+                    if (user["age"] == age):
+                        users_ages.append(user)
+                users = users_ages
+            if (name != ""):
+                users_names = []
+                for user in users:
+                    if (session.run('MATCH (u:Coach) WHERE (u.lastname STARTS WITH $name OR u.firstname STARTS WITH $name) AND u.email = $email RETURN COUNT(u)>0 AS d', name=name, email=user["email"]).single().data()["d"]):
+                        users_names.append(user)
+                users = users_names
+            if (country != ""):
+                users_country = []
+                for user in users:
+                    if (session.run('MATCH (u:Coach)-[r:LIVE_AT]->(old:Adress) WHERE u.email = $email AND old.country = $country RETURN COUNT(r)>0 AS d', email=user["email"], country=country).single().data()["d"]):
+                        users_country.append(user)
+                users = users_country
+
+            if (city != ""):
+                users_city = []
+                for user in users:
+                    if (session.run('MATCH (u:Coach)-[r:LIVE_AT]->(old:Adress) WHERE u.email = $email AND old.city = $city RETURN COUNT(r)>0 AS d', email=user["email"], city=city).single().data()["d"]):
+                        users_city.append(user)
+                users = users_city
+            return users
         else:
-            return []
+            result = session.run('MATCH (u:Club) return u')
+            users = []
+            for user in result:
+                u = user.data()['u']
+                u.pop('password', None)
+                users.append(u)
+
+            if (sport != ""):
+                users_sports = []
+                for user in users:
+
+                    if (session.run(
+                            'MATCH (u:Club)-[r:PRATIQUE]->(old:Sport) WHERE u.email = $email AND old.name = $name RETURN COUNT(r)>0 AS d', email=user["email"], name=sport).single().data()["d"]):
+                        users_sports.append(user)
+                users = users_sports
+            if (name != ""):
+                users_names = []
+                for user in users:
+                    if (session.run('MATCH (u:Club) WHERE u.name STARTS WITH $name AND u.email = $email RETURN COUNT(u)>0 AS d', name=name, email=user["email"]).single().data()["d"]):
+                        users_names.append(user)
+                users = users_names
+            if (country != ""):
+                users_country = []
+                for user in users:
+                    if (session.run('MATCH (u:Club)-[r:LIVE_AT]->(old:Adress) WHERE u.email = $email AND old.country = $country RETURN COUNT(r)>0 AS d', email=user["email"], country=country).single().data()["d"]):
+                        users_country.append(user)
+                users = users_country
+
+            if (city != ""):
+                users_city = []
+                for user in users:
+                    if (session.run('MATCH (u:Club)-[r:LIVE_AT]->(old:Adress) WHERE u.email = $email AND old.city = $city RETURN COUNT(r)>0 AS d', email=user["email"], city=city).single().data()["d"]):
+                        users_city.append(user)
+                users = users_city
+            return users

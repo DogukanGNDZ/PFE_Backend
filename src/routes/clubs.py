@@ -2,7 +2,9 @@ from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
 
 from src.dto.ClubDTO import *
+from src.dto.NotificationDTO import *
 from src.data.ClubToDatabase import *
+from src.data.NotificationToDatabase import create_notification_data
 import uuid
 import bcrypt
 import datetime
@@ -23,7 +25,10 @@ def get_all_clubs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_clubs()
-    return fetch_club(id)
+
+    club = fetch_club(id)
+    if(club is not None): return make_response(club, 200)
+    return make_response("Club not found", 404)
 
 
 @clubs_bp.route("/register", methods=["POST"])
@@ -38,7 +43,7 @@ def register():
                    "", 0, datetime.datetime.now(), "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
-    else:               
+    else:
         return create_club(club)
 
 
@@ -71,6 +76,9 @@ def accept_member():
     role = get_role(email_member)
     email_club = request.json.get('email_club')
     accept_new_member(email_club, email_member, role)
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez été accepté par un club", datetime.datetime.now(), "active")
+    create_notification_data(notification_user, role, email_member)
     return "Member accepted"
 
 
@@ -81,6 +89,9 @@ def remove_member_club():
     email_club = request.json.get('email_club')
     role = get_role(email_member)
     remove_member(email_club, email_member, role)
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez été viré du votre club actuel", datetime.datetime.now(), "active")
+    create_notification_data(notification_user, role, email_member)
     return "Member remove"
 
 

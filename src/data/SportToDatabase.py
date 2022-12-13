@@ -31,6 +31,7 @@ def fetch_sport(id: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (s:Sport) WHERE s.id = $id RETURN s', id=id)
+        if(not result.peek()): return None
 
         sport = result.single().data()['s']
 
@@ -72,15 +73,15 @@ def update_sport(sport: str, role: str, email: str, nameOldSport: str):
         else:
             if (role == "player"):
                 session.run(
-                    'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport)
                 return True
             elif (role == "coach"):
                 session.run(
-                    'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:Coach)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport)
                 return True
             elif (role == "club"):
                 session.run(
-                    'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name AND old.name = $oldId CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport, oldId=nameOldSport)
+                    'MATCH (p:Club)-[r:PRATIQUE]->(old:Sport) MATCH (a:Sport) WHERE p.email= $email AND a.name = $name CREATE (p)-[rel:PRATIQUE]->(a) DELETE r', email=email, name=sport)
                 return True
             else:
                 return False
@@ -89,12 +90,9 @@ def update_sport(sport: str, role: str, email: str, nameOldSport: str):
 def fetch_user_sport(role: str, email: str):
     with graph.session() as session:
         if (role == "player"):
-            print("in")
-            print(email)
             result = session.run(
                 'MATCH (p:User)-[r:PRATIQUE]->(old:Sport) WHERE p.email= $email RETURN old', email=email)
             sports = []
-            print(result)
             for sport in result:
                 a = sport.data()['old']
                 sports.append(a)

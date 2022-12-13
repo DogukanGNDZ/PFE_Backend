@@ -2,13 +2,16 @@ from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
 from azure.storage.blob import BlobServiceClient
 from src.dto.UserDTO import *
+from src.dto.NotificationDTO import *
 from src.data.UserToDatabase import *
 from src.data.AdressToDatabase import fetch_user_adress
+from src.data.NotificationToDatabase import create_notification_data
 from src.routes.auth import authorize, get_role
 from dotenv import load_dotenv
 import uuid
 import bcrypt
 import ast
+import datetime
 import os
 
 load_dotenv()
@@ -20,10 +23,7 @@ users_bp = Blueprint("users", __name__, url_prefix="/users")
 @users_bp.route("", methods=["GET"])
 @cross_origin()
 def get_all_users():
-    id = request.args.get("id", default="", type=str)
-    if (id == ""):
-        return fetch_all_users()
-    return fetch_user(id)
+    return fetch_all_users()
 
 
 @users_bp.route("/id/<id>", methods=["GET"])
@@ -111,6 +111,9 @@ def update_data_user():
                    weight, post, nYE, description, picture)
     user = update_user(user)
     if (user is not None):
+        notification_user = NotificationDTO(
+            generate_id(), "Votre profil a bien été modifié", datetime.datetime.now(), "active")
+        create_notification_data(notification_user, "player", email)
         return make_response(user, 200)
     return make_response("User not found", 404)
 
@@ -134,6 +137,9 @@ def apply_for_club():
     email_user = request.json.get('email_user')
     email_club = request.json.get('email_club')
     apply_for_club_user(email_user, email_club)
+    notification_club = NotificationDTO(
+        generate_id(), "Nouvelle demande d'inscription : Player", datetime.datetime.now(), "active")
+    create_notification_data(notification_club, "club", email_club)
     return "Request send"
 
 
@@ -157,6 +163,15 @@ def leave_club_player():
     email_user = request.json.get('email_user')
     email_club = request.json.get('email_club')
     leave_club(email_user, email_club)
+
+    message = "un joueur à quitté votre club, email joueur = " + email_user
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez quitté votre club", datetime.datetime.now(), "active")
+    notification_club = NotificationDTO(
+        generate_id(), message, datetime.datetime.now(), "active")
+    create_notification_data(notification_user, "player", email_user)
+    create_notification_data(notification_club, "club", email_club)
+
     return "Request leave successfully"
 
 
@@ -179,7 +194,6 @@ def serach_user():
     country = request.args.get("country", default="", type=str)
     city = request.args.get("city", default="", type=str)
     name = request.args.get("name", default="", type=str)
-    print("befor")
     return search_user_data(role, sport, age, country, city, name)
 
 
