@@ -16,7 +16,8 @@ def get_all_sports():
     if (id == 1):
         return fetch_all_sports()
     sport = fetch_sport(id)
-    if (sport is not None): return make_response(sport, 200)
+    if (sport is not None):
+        return make_response(sport, 200)
     return make_response("", 404)
 
 # generate a new id
@@ -41,8 +42,7 @@ def add_sport_user():
     name = request.json.get('name')
     email = request.json.get('email')
     role = get_role(email)
-    nameOldSport = request.json.get('nameOldSport')
-    if (update_sport(name, role, email, nameOldSport)):
+    if (update_sport(name, role, email)):
         return "sport added successfully"
     else:
         response = make_response("Wrong data", 400)
