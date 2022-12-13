@@ -68,10 +68,8 @@ def add(team_id: str, email: str):
 
 def remove(team_id: str, email: str):
     with graph.session() as session:
-        result = session.run(
-            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email=email, team_id=team_id)
+        result = session.run('MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email = email, team_id = team_id)
+        
+        if(result.peek()): return True
+        else: return False
 
-        if (result.peek()):
-            return True
-        else:
-            return False
