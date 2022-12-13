@@ -14,33 +14,31 @@ password = os.getenv("AUTH")
 graph = GraphDatabase.driver(host, auth=(user, password))
 
 
-def create_adress_data(adress_dto: AdressDTO, email: str, role: str, idOldAdress: str):
+def create_adress_data(adress_dto: AdressDTO, email: str, role: str):
     with graph.session() as session:
         # Create the new user in the Neo4j database
         result = session.run(
             'CREATE (a:Adress $adress_properties) RETURN a', adress_properties=asdict(adress_dto))
 
         adress = result.single().data()['a']
-        if (idOldAdress == ""):
-            if (role == "player"):
-                session.run(
-                    'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
-                )
-                session.run(
-                    'MATCH (p:User) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
-            elif (role == "coach"):
-                session.run(
-                    'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
-                )
-                session.run(
-                    'MATCH (p:Coach) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
-            elif (role == "club"):
-                session.run(
-                    'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
-                )
-                session.run(
-                    'MATCH (p:Club) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
-
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+            )
+            session.run(
+                'MATCH (p:User) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
+        elif (role == "coach"):
+            session.run(
+                'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+            )
+            session.run(
+                'MATCH (p:Coach) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
+        elif (role == "club"):
+            session.run(
+                'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+            )
+            session.run(
+                'MATCH (p:Club) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
         return adress
 
 
@@ -48,7 +46,8 @@ def fetch_adress(id: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (a:Adress) WHERE a.id = $id RETURN a', id=id)
-        if(not result.peek()): return None
+        if (not result.peek()):
+            return None
 
         adress = result.single().data()['a']
 
