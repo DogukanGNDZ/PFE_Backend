@@ -3,7 +3,7 @@ POST http://localhost:5000/teams/create
 Content-Type: application/json
 
 {
-    "category": "test"
+    "category": "Soccer"
 }
 
 ###
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "player":"jeabn@matrix.com",
-    "team":"f1b218dd-203a-4bc4-b0fd-4e6712426d78"
+    "team":"0deac8ab-af14-4363-86fd-0f5231aa4dfa"
 }
 
 
