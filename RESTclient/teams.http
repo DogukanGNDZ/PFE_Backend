@@ -10,20 +10,38 @@ Content-Type: application/json
 GET http://localhost:5000/teams?id=f1b218dd-203a-4bc4-b0fd-4e6712426d78
 
 ###
-POST http://localhost:5000/teams/add
+PUT http://localhost:5000/teams/add
 Content-Type: application/json
 
 {
-    "player":"jeabn@matrix.com",
-    "team":"0deac8ab-af14-4363-86fd-0f5231aa4dfa"
+    "player":"dogbdfdfbbb@front.com",
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
 }
 
 
 ###
-POST http://localhost:5000/teams/remove
+DELETE http://localhost:5000/teams/remove
 Content-Type: application/json
 
 {
-    "player":"jeabn@matrix.com",
-    "team":"f1b218dd-203a-4bc4-b0fd-4e6712426d78"
+    "player":"dogbdfdfbbb@front.com",
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
+}
+
+###
+PUT http://localhost:5000/teams/setCoach
+Content-Type: application/json
+
+{
+    "coach":"jeanhuguhrsg@matrix.com",
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
+}
+
+
+###
+GET http://localhost:5000/teams/getCoach
+Content-Type: application/json
+
+{
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
 }

@@ -10,7 +10,7 @@ teams_bp = Blueprint("teams", __name__, url_prefix="/teams")
 
 @teams_bp.route("", methods=["GET"])
 def get_all_teams():
-    id = request.args.get("id", default=1, type=int)
+    id = request.args.get("id", default=1, type=str)
     if (id == 1):
         return fetch_all_teams()
 
@@ -57,3 +57,29 @@ def delete_player():
     if (remove_player(team, player)):
         return make_response("", 200)
     return make_response("", 404)
+
+
+
+@teams_bp.route("/setCoach", methods=["PUT"])
+@cross_origin()
+def put_coach():
+
+    coach = request.json.get('coach')
+    team = request.json.get('team')
+
+    if (add_coach(team, coach)):
+        return make_response("", 200)
+    return make_response("", 404)
+
+@teams_bp.route("/getCoach", methods=["GET"])
+@cross_origin()
+def get_coach():
+
+    team = request.json.get('team')
+
+    coach = fetch_coach(team)
+
+    if (coach is not None):
+        return make_response(coach, 200)
+    return make_response("", 404)
+

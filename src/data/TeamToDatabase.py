@@ -62,8 +62,7 @@ def add_player(team_id: str, email: str):
 
         if (result.peek()):
             return True
-        else:
-            return False
+        return False
 
 
 def remove_player(team_id: str, email: str):
@@ -73,5 +72,30 @@ def remove_player(team_id: str, email: str):
 
         if (result.peek()):
             return True
-        else:
+        return False
+
+def add_coach(team_id: str, email: str):
+    with graph.session() as session:
+        session.run(
+            'MATCH (c:Coach)-[r:ENTRAINE]->(t:Team) WHERE c.email = $email AND t.team_id = $team_id DELETE r RETURN c, t', email=email, team_id=team_id
+        )
+        result = session.run(
+            'MATCH (c:Coach), (t:Team) WHERE c.email = $email AND t.id = $team_id CREATE (c)-[r:ENTRAINE]->(t) RETURN c, r, t', email=email, team_id=team_id
+        )
+        if(not result.peek()): 
             return False
+        return True
+
+def fetch_coach(team_id: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (c:Coach)-[r:ENTRAINE]->(t:Team) WHERE t.id = $team_id RETURN c', team_id=team_id
+        )
+        if(not result.peek()): return None
+
+        coach = result.single().data()["c"]
+        coach.pop("password", None)
+
+        print(coach)
+
+        return coach
