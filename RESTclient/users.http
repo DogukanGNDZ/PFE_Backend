@@ -3,12 +3,12 @@ POST http://localhost:5000/users/register
 Content-Type: application/json
 
 {
-    "lastname" : "marti",
-    "firstname" : "jean",
-    "email" : "illls@matrix.com",
-    "password" : "yayaya",
+    "lastname" : "MESSI",
+    "firstname" : "GOAT",
+    "email" : "dogbdfdfbbb@front.com",
+    "password" : "yayayaya",
     "age" : 16,
-    "role":"club"
+    "role":"player"
 }
 
 ### connection
@@ -16,8 +16,8 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-    "email": "illls@matrix.com",
-    "password" : "yayaya"
+    "email": "dogb@front.com",
+    "password" : "yayayaya"
 }
 ###> {% client.global.set("token", response.body) %}
 
@@ -27,7 +27,7 @@ POST http://localhost:5000/auth/confirm_token
 Content-Type: application/json
 
 {
-    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMmQ2ZGY5MTgtYmI0YS00YWY2LTk3NjUtMzY0Y2NmYmNkNzYxIiwiZXhwIjoxNjcwOTQ1NDM4fQ.OtIWhKVAE09G6hvIGtuMX-oD_z9qdfsmY7G3PaibWYc"
+    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwNzU4NTA1fQ.xn6jPw4HW6STttPy7JiNgeMYIw0jZ7XEyYPp2kcf3vE"
 }
 
 ### wrong login
@@ -43,12 +43,14 @@ Content-Type: application/json
 GET http://localhost:5000/users/id/rzeefz
 ###
 GET http://localhost:5000/users/email/illls@matrix.com
+###
+GET http://localhost:5000/users
 
 
 ###
 GET http://localhost:5000/users/myprofil
 Content-Type: application/json
-Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwODQ4NjAzfQ.0M9RHwdq2dsO_nTZK8F2jWXLFEmyF-Z-kFGM47qt3zk
+Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcxMDIxMzg3fQ.Y5dHuQ0L2jb2goijVsqBkUc4J7O4ZOCgAoqbLj7o5gE
 
 
 ###
@@ -57,15 +59,15 @@ Content-Type: application/json
 Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcwOTQ1NDI0fQ.9bAeMXB4E5vRlwp3hi6I9Vop0x2fIIbh_YaSgyyRH-U
 
 {  
-    "firstname": "jean",
-    "lastname": "marti",
-    "email": "jeabn@matrix.com",
+    "firstname": "MESSI",
+    "lastname": "le GOAT",
+    "email": "dogb@front.com",
     "age": 16,
     "size": 186.9,  
     "weight": 79.9,
     "post":"place du GOAT",
     "number_year_experience": 189,
-    "description": "je suis null",
+    "description": "je suis le GOATTT",
     "picture": "https://i.insider.com/602ee9ced3ad27001837f2ac?width=1000&format=jpeg&auto=webp"
 }
 

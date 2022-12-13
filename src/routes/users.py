@@ -1,16 +1,21 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
-
+from azure.storage.blob import BlobServiceClient
 from src.dto.UserDTO import *
 from src.dto.NotificationDTO import *
 from src.data.UserToDatabase import *
 from src.data.AdressToDatabase import fetch_user_adress
 from src.data.NotificationToDatabase import create_notification_data
 from src.routes.auth import authorize, get_role
+from dotenv import load_dotenv
 import uuid
 import bcrypt
 import ast
 import datetime
+import os
+
+load_dotenv()
+KEYAZURE = os.getenv("STRINGAZURE")
 
 users_bp = Blueprint("users", __name__, url_prefix="/users")
 
@@ -61,7 +66,8 @@ def register():
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
-        return make_response(create_user(user), 200)
+        create_user(user)
+        return make_response("created", 200)
 
 
 @users_bp.route("/myprofil", methods=["GET"])
@@ -189,3 +195,37 @@ def serach_user():
     city = request.args.get("city", default="", type=str)
     name = request.args.get("name", default="", type=str)
     return search_user_data(role, sport, age, country, city, name)
+
+
+
+@users_bp.route("/uploadImage", methods=["POST"])
+@cross_origin()
+def upload_image():
+    # Get the image file from the request
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+
+    id=ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
+    user=fetch_user(id)
+    image_file = request.files["image"]
+
+    # Create a BlobServiceClient object to connect to your Azure Blob Storage account
+
+    blob_service_client = BlobServiceClient.from_connection_string(
+        conn_str=KEYAZURE
+    )
+    # Create a container in your Azure Blob Storage account
+    container_name = "imagess"
+    container_client = blob_service_client.get_container_client(container_name)
+
+    # Upload the image file to the container
+    
+    blob_name = image_file.filename+generate_id()+".png"
+    userd=UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                   user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name)
+    update_user(userd)
+    blob_client = container_client.upload_blob(blob_name, image_file)
+
+    return make_response("Image uploaded successfully", 200)
