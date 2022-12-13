@@ -96,3 +96,10 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:5000/users/isMember?email_user=jeabn@matrix.com
+
+
+###
+GET http://localhost:5000/users/searchUser?role=player&name=
+
+###
+GET http://localhost:5000/users
