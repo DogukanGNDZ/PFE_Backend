@@ -34,13 +34,13 @@ def create_adress_data(adress_dto: AdressDTO, email: str, role: str, idOldAdress
         else:
             if (role == "player"):
                 session.run(
-                    'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name AND old.id = $oldId CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id, oldId=idOldAdress)
+                    'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
             elif (role == "coach"):
                 session.run(
-                    'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name AND old.id = $oldId CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id, oldId=idOldAdress)
+                    'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
             elif (role == "club"):
                 session.run(
-                    'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name AND old.id = $oldId CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id, oldId=idOldAdress)
+                    'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a) DELETE r DELETE old', email=email, name=adress_dto.id)
         # Return the result of the query
 
         return adress
