@@ -191,5 +191,4 @@ def serach_user():
     country = request.args.get("country", default="", type=str)
     city = request.args.get("city", default="", type=str)
     name = request.args.get("name", default="", type=str)
-    print("befor")
     return search_user_data(role, sport, age, country, city, name)
