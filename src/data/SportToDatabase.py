@@ -31,6 +31,7 @@ def fetch_sport(id: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (s:Sport) WHERE s.id = $id RETURN s', id=id)
+        if(not result.peek()): return None
 
         sport = result.single().data()['s']
 

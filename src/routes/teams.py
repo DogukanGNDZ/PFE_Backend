@@ -13,8 +13,10 @@ def get_all_teams():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_teams()
-    return fetch_team(id)
 
+    team = fetch_team(id)
+    if(team is not None): return make_response(team, 200)
+    return make_response("Team not found", 404)
 # generate a new id
 
 

@@ -14,7 +14,9 @@ def get_all_adresses():
     id = request.args.get("id", default="", type=str)
     if (id == ""):
         return fetch_all_adress()
-    return fetch_adress(id)
+    address = fetch_adress(id)
+    if(address is not None): return make_response(address, 200)
+    return make_response("", 404)
 
 # generate a new id
 

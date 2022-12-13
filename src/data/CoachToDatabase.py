@@ -33,6 +33,8 @@ def fetch_coach(id: str):
         result = session.run(
             'MATCH (co:Coach) WHERE co.id = $id RETURN co', id=id)
 
+        if(not result.peek()): return None
+
         coach = result.single().data()['co']
         coach.pop('password', None)
 
@@ -82,8 +84,11 @@ def get_coach_club(email_user: str):
 
 def leave_club(email_coach: str, email_club: str):
     with graph.session() as session:
-        session.run(
-            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r', name=email_coach, email=email_club)
+        result = session.run(
+            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r return p', name=email_coach, email=email_club)
+
+        if(not result.peek()): return False
+        return True
 
 
 def is_member(email_coach: str):

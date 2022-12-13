@@ -31,6 +31,8 @@ def fetch_team(id: str):
     with graph.session() as session:
         result = session.run('MATCH (t:Team) WHERE t.id = $id RETURN t', id=id)
 
+        if(not result.peek()): return None
+
         team = result.single().data()['t']
 
         # Return the result of the query
@@ -63,3 +65,4 @@ def remove(team_id: str, email: str):
         
         if(result.peek()): return True
         else: return False
+

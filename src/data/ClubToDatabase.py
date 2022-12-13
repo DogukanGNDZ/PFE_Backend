@@ -35,6 +35,8 @@ def fetch_club(id: str):
     with graph.session() as session:
         result = session.run('MATCH (c:Club) WHERE c.id = $id RETURN c', id=id)
 
+        if(not result.peek()): return None
+
         club = result.single().data()['c']
         date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
         club["creation_date"] = json.dumps(date_str)
