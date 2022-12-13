@@ -5,6 +5,8 @@ from src.dto.ClubDTO import *
 from src.dto.NotificationDTO import *
 from src.data.ClubToDatabase import *
 from src.data.NotificationToDatabase import create_notification_data
+from src.routes.auth import authorize
+import ast
 import uuid
 import bcrypt
 import datetime
@@ -27,7 +29,8 @@ def get_all_clubs():
         return fetch_all_clubs()
 
     club = fetch_club(id)
-    if(club is not None): return make_response(club, 200)
+    if (club is not None):
+        return make_response(club, 200)
     return make_response("Club not found", 404)
 
 
@@ -100,3 +103,31 @@ def remove_member_club():
 def del_all():
     remove_all_clubs()
     return "All remove"
+
+
+@clubs_bp.route("/update", methods=["PUT"])
+@cross_origin()
+def update_data_coach():
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+
+    name = request.json.get('name')
+    email = request.json.get('email')
+    description = request.json.get('description')
+    picture = request.json.get('picture')
+
+    id = fetch_user_email(email)["id"]
+    if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
+        return make_response('Not authorized', 401)
+
+    user = ClubDTO(0, name, email,
+                   "", description, 0, datetime.datetime.now(), picture)
+    user = update_user(user)
+    if (user is not None):
+        notification_user = NotificationDTO(
+            generate_id(), "Votre profil a bien été modifié", datetime.datetime.now(), "active")
+        create_notification_data(notification_user, "club", email)
+        return make_response(user, 200)
+    return make_response("User not found", 404)
