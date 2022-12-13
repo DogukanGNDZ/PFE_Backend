@@ -46,7 +46,7 @@ GET http://localhost:5000/users
 ###
 GET http://localhost:5000/users/myprofil
 Content-Type: application/json
-Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzkyNGM5NWItZjNjYS00OWM5LWE1NGUtOTQ5ZWQ3MmUzNWQ1IiwiZXhwIjoxNjcwODQ4NjAzfQ.0M9RHwdq2dsO_nTZK8F2jWXLFEmyF-Z-kFGM47qt3zk
+Authorize : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyOS00M2Q1LWI3MWYtYzIyYTU4OWQ1ZjFmIiwiZXhwIjoxNjcxMDIxMzg3fQ.Y5dHuQ0L2jb2goijVsqBkUc4J7O4ZOCgAoqbLj7o5gE
 
 
 ###
