@@ -14,7 +14,9 @@ def get_all_sports():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_sports()
-    return fetch_sport(id)
+    sport = fetch_sport(id)
+    if (sport is not None): return make_response(sport, 200)
+    return make_response("", 404)
 
 # generate a new id
 

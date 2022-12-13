@@ -25,7 +25,10 @@ def get_all_coachs():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
         return fetch_all_coachs()
-    return fetch_coach(id)
+
+    coach = fetch_coach(id)
+    if(coach is not None): return make_response(coach, 200)
+    return make_response("Coach not found", 404)
 
 
 @coachs_bp.route("/register", methods=["POST"])
@@ -72,7 +75,8 @@ def get_club():
 def leave_club_coach():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
-    leave_club(email_coach, email_club)
+    left = leave_club(email_coach, email_club)
+    if(not left): return make_response("", 404)
     message = "un coach à quitté votre club, email coach = " + email_coach
     notification_user = NotificationDTO(
         generate_id(), "Vous avez quitté votre club", datetime.datetime.now(), "active")
@@ -80,7 +84,7 @@ def leave_club_coach():
         generate_id(), message, datetime.datetime.now(), "active")
     create_notification_data(notification_user, "coach", email_coach)
     create_notification_data(notification_club, "club", email_club)
-    return "Request leave successfully"
+    return make_response("Request leave successfully", 200)
 
 
 @coachs_bp.route("/isMember", methods=["GET"])

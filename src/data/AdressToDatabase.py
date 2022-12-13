@@ -48,6 +48,7 @@ def fetch_adress(id: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (a:Adress) WHERE a.id = $id RETURN a', id=id)
+        if(not result.peek()): return None
 
         adress = result.single().data()['a']
 
