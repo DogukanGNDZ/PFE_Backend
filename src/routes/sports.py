@@ -10,6 +10,7 @@ sports_bp = Blueprint("sports", __name__, url_prefix="/sports")
 
 
 @sports_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_sports():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
@@ -49,7 +50,7 @@ def add_sport_user():
 
 @sports_bp.route("/userSport", methods=["GET"])
 @cross_origin()
-def get_adress_user():
+def get_sport_user():
     email = request.args.get("email", default="", type=str)
     role = get_role(email)
     print(role)

@@ -73,7 +73,7 @@ Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyO
 GET http://localhost:5000/users/adresses?email=jeabn@matrix.com
 
 ###
-GET http://localhost:5000/sports/userSport?email=jeabn@matrix.com
+GET http://localhost:5000/sports/userSport?email=jerome1@gmail.com
 
 ###
 POST http://localhost:5000/users/applyClub
