@@ -74,6 +74,7 @@ def remove_player(team_id: str, email: str):
             return True
         return False
 
+
 def add_coach(team_id: str, email: str):
     with graph.session() as session:
         session.run(
@@ -82,16 +83,18 @@ def add_coach(team_id: str, email: str):
         result = session.run(
             'MATCH (c:Coach), (t:Team) WHERE c.email = $email AND t.id = $team_id CREATE (c)-[r:ENTRAINE]->(t) RETURN c, r, t', email=email, team_id=team_id
         )
-        if(not result.peek()): 
+        if (not result.peek()):
             return False
         return True
+
 
 def fetch_coach(team_id: str):
     with graph.session() as session:
         result = session.run(
             'MATCH (c:Coach)-[r:ENTRAINE]->(t:Team) WHERE t.id = $team_id RETURN c', team_id=team_id
         )
-        if(not result.peek()): return None
+        if (not result.peek()):
+            return None
 
         coach = result.single().data()["c"]
         coach.pop("password", None)
@@ -99,3 +102,16 @@ def fetch_coach(team_id: str):
         print(coach)
 
         return coach
+
+
+def update_category_data(team_id: str, new_category: str):
+    with graph.session() as session:
+        result = session.run('MATCH (t:Team) WHERE t.id = $team_id SET t.category = $new_category RETURN t',
+                             team_id=team_id, new_category=new_category)
+        if (not result.peek()):
+            return None
+
+        team = result.single().data()['t']
+
+        # Return the result of the query
+        return team

@@ -15,7 +15,8 @@ def get_all_teams():
         return fetch_all_teams()
 
     team = fetch_team(id)
-    if(team is not None): return make_response(team, 200)
+    if (team is not None):
+        return make_response(team, 200)
     return make_response("Team not found", 404)
 # generate a new id
 
@@ -59,7 +60,6 @@ def delete_player():
     return make_response("", 404)
 
 
-
 @teams_bp.route("/setCoach", methods=["PUT"])
 @cross_origin()
 def put_coach():
@@ -70,6 +70,7 @@ def put_coach():
     if (add_coach(team, coach)):
         return make_response("", 200)
     return make_response("", 404)
+
 
 @teams_bp.route("/getCoach", methods=["GET"])
 @cross_origin()
@@ -83,3 +84,14 @@ def get_coach():
         return make_response(coach, 200)
     return make_response("", 404)
 
+
+@teams_bp.route("/updateCategory", methods=["PUT"])
+@cross_origin()
+def update_category():
+    team = request.json.get('team')
+    category = request.json.get('category')
+    team = update_category_data(team, category)
+
+    if (team is not None):
+        return make_response(team, 200)
+    return make_response("", 404)

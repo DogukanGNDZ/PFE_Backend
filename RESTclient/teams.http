@@ -45,3 +45,12 @@ Content-Type: application/json
 {
     "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
 }
+
+###
+PUT http://localhost:5000/teams/updateCategory
+Content-Type: application/json
+
+{
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354",
+    "category":"P2 regionale"
+}
