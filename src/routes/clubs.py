@@ -23,6 +23,7 @@ def generate_id():
 
 
 @clubs_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_clubs():
     id = request.args.get("id", default="", type=str)
     if (id == 1):
