@@ -1,5 +1,6 @@
 from neo4j import GraphDatabase
 from flask import make_response
+from src.data.SportToDatabase import fetch_user_sport
 from src.dto.CoachDTO import *
 import os
 import bcrypt
@@ -52,7 +53,10 @@ def fetch_all_coachs():
         for coach in result:
             co = coach.data()['co']
             co.pop('password', None)
+            sport = fetch_user_sport("coach", co["email"])
             coachs.append(co)
+            if (len(sport) > 0):
+                coachs.append(sport[0])
 
         # Return the result of the query
         return coachs
@@ -60,8 +64,6 @@ def fetch_all_coachs():
 
 def apply_for_club_coach(email_coach: str, email_club: str):
     with graph.session() as session:
-        print(email_coach)
-        print(email_club)
         session.run(
             'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_coach, name=email_club)
         session.run(
@@ -105,7 +107,6 @@ def is_member(email_coach: str):
 
 def update_coach(coach_dto: CoachDTO):
     with graph.session() as session:
-        print("data")
         result = session.run(
             'MATCH (u:Coach) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.number_year_experience = $nYE, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=coach_dto.email,

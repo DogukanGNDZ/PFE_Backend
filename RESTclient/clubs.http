@@ -54,3 +54,6 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5000/clubs/removeAllClubs
+
+###
+GET http://localhost:5000/clubs/getTeamsClub?email=uaae@hotmail.com

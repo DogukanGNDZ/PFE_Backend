@@ -99,8 +99,6 @@ def fetch_coach(team_id: str):
         coach = result.single().data()["c"]
         coach.pop("password", None)
 
-        print(coach)
-
         return coach
 
 
@@ -115,3 +113,15 @@ def update_category_data(team_id: str, new_category: str):
 
         # Return the result of the query
         return team
+
+
+def get_team_player_data(team_id: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE t.id = $team_id RETURN u', team_id=team_id)
+        users = []
+        for user in result:
+            u = user.data()['u']
+            u.pop('password', None)
+            users.append(u)
+        return users

@@ -142,9 +142,12 @@ def apply_for_club():
     email_user = request.json.get('email_user')
     email_club = request.json.get('email_club')
     apply_for_club_user(email_user, email_club)
+    notification_player = NotificationDTO(generate_id(
+    ), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), "Nouvelle demande d'inscription : Player", datetime.datetime.now(), "active")
     create_notification_data(notification_club, "club", email_club)
+    create_notification_data(notification_player, "player", email_user)
     return "Request send"
 
 
