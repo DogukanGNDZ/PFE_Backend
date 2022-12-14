@@ -247,7 +247,7 @@ def upload_image():
 
 @users_bp.route("/uploadImageBanner", methods=["POST"])
 @cross_origin()
-def upload_image():
+def upload_image_banner():
     # Get the image file from the request
     token = request.headers.get('Authorize')
     claims = authorize(token)
