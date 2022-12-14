@@ -61,7 +61,8 @@ def fetch_all_clubs():
             c.pop('password', None)
             sport = fetch_user_sport("club", c["email"])
             clubs.append(c)
-            clubs.append(sport)
+            if (len(sport) > 0):
+                clubs.append(sport[0])
         # Return the result of the query
         return clubs
 
