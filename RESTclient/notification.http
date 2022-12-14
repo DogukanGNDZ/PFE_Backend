@@ -22,5 +22,5 @@ POST http://localhost:5000/notifications/updateState
 Content-Type: application/json
 
 {
-    "id": "27a0e5ab-6d81-41f8-8804-84df588f8f99"
+    "id": "3ac99ce1-f14b-4fd6-8ca8-01a45f7fb728"
 }

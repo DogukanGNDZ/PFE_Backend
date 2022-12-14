@@ -23,19 +23,19 @@ def create_adress_data(adress_dto: AdressDTO, email: str, role: str):
         adress = result.single().data()['a']
         if (role == "player"):
             session.run(
-                'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                'MATCH (p:User)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $email DELETE r DELETE old', email=email
             )
             session.run(
                 'MATCH (p:User) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
         elif (role == "coach"):
             session.run(
-                'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                'MATCH (p:Coach)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $email DELETE r DELETE old', email=email
             )
             session.run(
                 'MATCH (p:Coach) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
         elif (role == "club"):
             session.run(
-                'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $emailDELETE r DELETE old', email=email
+                'MATCH (p:Club)-[r:LIVE_AT]->(old:Adress) WHERE p.email= $email DELETE r DELETE old', email=email
             )
             session.run(
                 'MATCH (p:Club) MATCH (a:Adress) WHERE p.email= $email AND a.id = $name CREATE (p)-[rel:LIVE_AT]->(a)', email=email, name=adress_dto.id)
