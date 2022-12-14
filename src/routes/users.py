@@ -106,14 +106,14 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
-    picture_banner = request.json.get('picture_banner')
+    
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = UserDTO(0, firstname, lastname, age, email, "", size,
-                   weight, post, nYE, description, picture, picture_banner)
+                   weight, post, nYE, description, picture, "")
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(
@@ -228,9 +228,9 @@ def upload_image():
     # Upload the image file to the container
 
     blob_name = image_file.filename+generate_id()+".png"
-    if (role == "palyer"):
+    if (role == "player"):
         userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name, user["picture_banner"])
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name,"")
         update_user(userd)
     elif (role == "coach"):
         coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
@@ -271,7 +271,7 @@ def upload_image_banner():
     # Upload the image file to the container
 
     blob_name = image_file.filename+generate_id()+".png"
-    if (role == "palyer"):
+    if (role == "player"):
         userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
                         user["weight"], user["post"], user["number_year_experience"], user["description"], user["picture"], blob_name)
         update_user(userd)
