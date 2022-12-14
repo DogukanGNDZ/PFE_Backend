@@ -141,10 +141,9 @@ def get_adress_user():
 @cross_origin()
 def apply_for_club():
     email_user = request.json.get('email_user')
-    email_club = request.json.get('email_club')
     id_team = request.json.get('id_team')
     club = get_club_with_team(id_team)
-    apply_for_club_user(email_user, email_club, id_team)
+    apply_for_club_user(email_user, id_team)
     notification_player = NotificationDTO(generate_id(
     ), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(

@@ -59,9 +59,8 @@ def register():
 @cross_origin()
 def apply_for_club():
     email_coach = request.json.get('email_coach')
-    email_club = request.json.get('email_club')
     id_team = request.json.get('id_team')
-    apply_for_club_coach(email_coach, email_club, id_team)
+    apply_for_club_coach(email_coach, id_team)
     club = get_club_with_team(id_team)
     notification_coach = NotificationDTO(
         generate_id(), "Vous avez bien postulez pour une team", datetime.datetime.now(), "active")
@@ -115,7 +114,7 @@ def check_is_member():
 @coachs_bp.route("/update", methods=["PUT"])
 @cross_origin()
 def update_data_coach():
-    
+
     token = request.headers.get('Authorize')
     claims = authorize(token)
     if claims.status_code == 498 or claims.status_code == 401:

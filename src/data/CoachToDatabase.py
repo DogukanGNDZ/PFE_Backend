@@ -62,7 +62,7 @@ def fetch_all_coachs():
         return coachs
 
 
-def apply_for_club_coach(email_coach: str, email_club: str, id_team: str):
+def apply_for_club_coach(email_coach: str, id_team: str):
     with graph.session() as session:
         session.run(
             'MATCH(u:Coach)-[r:APPLY_FOR_COACH]->(t:Team) WHERE u.email= $email AND t.id = $name DELETE r', email=email_coach, name=id_team)

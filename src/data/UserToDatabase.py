@@ -187,7 +187,7 @@ def update_user(user_dto: UserDTO):
         return user
 
 
-def apply_for_club_user(email_user: str, email_club: str, id_team: str):
+def apply_for_club_user(email_user: str, id_team: str):
     with graph.session() as session:
         session.run(
             'MATCH(u:User)-[r:APPLY_FOR_PLAYER]->(t:Team) WHERE u.email= $email AND t.id = $name DELETE r', email=email_user, name=id_team)
