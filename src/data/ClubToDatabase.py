@@ -167,11 +167,12 @@ def get_team_clubs(email_club: str):
 def update_club(club_dto: ClubDTO):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:Club) WHERE u.email = $email SET u.name = $name, u.description = $description, u.picture = $picture RETURN u',
+            'MATCH (u:Club) WHERE u.email = $email SET u.name = $name, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=club_dto.email,
             name=club_dto.name,
             description=club_dto.description,
-            picture=club_dto.picture)
+            picture=club_dto.picture,
+            picture_banner=club_dto.picture_banner)
 
         if (not result.peek()):
             return None

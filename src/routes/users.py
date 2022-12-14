@@ -62,7 +62,7 @@ def register():
     email = request.json.get('email')
     role = request.json.get('role')
     user = UserDTO(generate_id(), firstname, lastname, age,
-                   email, pwd_hash, 0, 0, "", 0, "", "")
+                   email, pwd_hash, 0, 0, "", 0, "", "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
@@ -102,13 +102,14 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    picture_banner = request.json.get('picture_banner')
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = UserDTO(0, firstname, lastname, age, email, "", size,
-                   weight, post, nYE, description, picture)
+                   weight, post, nYE, description, picture, picture_banner)
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(
@@ -197,7 +198,6 @@ def serach_user():
     return search_user_data(role, sport, age, country, city, name)
 
 
-
 @users_bp.route("/uploadImage", methods=["POST"])
 @cross_origin()
 def upload_image():
@@ -207,8 +207,8 @@ def upload_image():
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
 
-    id=ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
-    user=fetch_user(id)
+    id = ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
+    user = fetch_user(id)
     image_file = request.files["image"]
 
     # Create a BlobServiceClient object to connect to your Azure Blob Storage account
@@ -221,10 +221,10 @@ def upload_image():
     container_client = blob_service_client.get_container_client(container_name)
 
     # Upload the image file to the container
-    
+
     blob_name = image_file.filename+generate_id()+".png"
-    userd=UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                   user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name)
+    userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                    user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name)
     update_user(userd)
     blob_client = container_client.upload_blob(blob_name, image_file)
 

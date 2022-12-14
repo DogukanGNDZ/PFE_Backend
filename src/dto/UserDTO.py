@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class UserDTO:
     id: str
@@ -14,4 +15,4 @@ class UserDTO:
     number_year_experience: int
     description: str
     picture: str
-
+    picture_banner: str

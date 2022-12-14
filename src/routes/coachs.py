@@ -47,7 +47,7 @@ def register():
     lastname = request.json.get('lastname')
     email = request.json.get('email')
     coach = CoachDTO(generate_id(), firstname, lastname,
-                     age, email, pwd_hash, 0, "", "")
+                     age, email, pwd_hash, 0, "", "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
@@ -116,13 +116,14 @@ def update_data_coach():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    picture_banner = request.json.get('picture_banner')
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = CoachDTO(0, firstname, lastname, age, email,
-                    "", nYE, description, picture)
+                    "", nYE, description, picture, picture_banner)
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(

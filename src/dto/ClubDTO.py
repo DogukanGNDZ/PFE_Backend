@@ -12,3 +12,4 @@ class ClubDTO:
     number_teams: int
     creation_date: datetime
     picture: str
+    picture_banner: str

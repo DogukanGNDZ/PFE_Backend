@@ -161,7 +161,7 @@ def update_user(user_dto: UserDTO):
     with graph.session() as session:
         print("data")
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
+            'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=user_dto.email,
             firstname=user_dto.firstname,
             lastname=user_dto.lastname,
@@ -171,7 +171,8 @@ def update_user(user_dto: UserDTO):
             post=user_dto.post,
             nYE=user_dto.number_year_experience,
             description=user_dto.description,
-            picture=user_dto.picture)
+            picture=user_dto.picture,
+            picture_banner=user_dto.picture_banner)
 
         if (not result.peek()):
             return None
