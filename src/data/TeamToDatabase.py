@@ -58,7 +58,7 @@ def fetch_all_teams():
 def add_player(team_id: str, email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id SET t.number_players = t.number_players+1 CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
+            'MATCH (u:User), (t:Team) WHERE NOT (u)-[:CONSTITUE]->(t) AND u.email = $email AND t.id = $team_id SET t.number_players = t.number_players+1 CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
 
         if (result.peek()):
             return True
