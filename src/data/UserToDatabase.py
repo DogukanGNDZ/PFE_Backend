@@ -131,7 +131,9 @@ def fetch_all_users():
             u.pop('password', None)
             sport = fetch_user_sport("player", u["email"])
             users.append(u)
-            users.append(sport)
+            if (len(sport) > 0):
+                users.append(sport[0])
+
         # Return the result of the query
         return users
 
