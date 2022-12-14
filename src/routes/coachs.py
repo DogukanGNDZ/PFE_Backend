@@ -47,7 +47,7 @@ def register():
     lastname = request.json.get('lastname')
     email = request.json.get('email')
     coach = CoachDTO(generate_id(), firstname, lastname,
-                     age, email, pwd_hash, 0, "", "")
+                     age, email, pwd_hash, 0, "", "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
@@ -60,9 +60,15 @@ def apply_for_club():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
     apply_for_club_coach(email_coach, email_club)
+
+    notification_coach = NotificationDTO(
+        generate_id(), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), "Nouvelle demande d'inscription : Coach", datetime.datetime.now(), "active")
+
     create_notification_data(notification_club, "club", email_club)
+    create_notification_data(notification_coach, "coach", email_coach)
+
     return "Request send"
 
 
@@ -81,13 +87,16 @@ def leave_club_coach():
     left = leave_club(email_coach, email_club)
     if (not left):
         return make_response("", 404)
+
     message = "un coach à quitté votre club, email coach = " + email_coach
     notification_user = NotificationDTO(
         generate_id(), "Vous avez quitté votre club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), message, datetime.datetime.now(), "active")
+
     create_notification_data(notification_user, "coach", email_coach)
     create_notification_data(notification_club, "club", email_club)
+
     return make_response("Request leave successfully", 200)
 
 
@@ -116,13 +125,14 @@ def update_data_coach():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    picture_banner = request.json.get('picture_banner')
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = CoachDTO(0, firstname, lastname, age, email,
-                    "", nYE, description, picture)
+                    "", nYE, description, picture, picture_banner)
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(

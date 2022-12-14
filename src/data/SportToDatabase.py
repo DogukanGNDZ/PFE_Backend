@@ -17,7 +17,6 @@ graph = GraphDatabase.driver(host, auth=(user, password))
 def create_sport_data(sport_dto: SportDTO):
     with graph.session() as session:
         # Create the new user in the Neo4j database
-        print("in")
         result = session.run(
             'CREATE (s:Sport $sport_properties) RETURN s', sport_properties=asdict(sport_dto))
 

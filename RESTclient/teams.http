@@ -3,27 +3,58 @@ POST http://localhost:5000/teams/create
 Content-Type: application/json
 
 {
-    "category": "Soccer"
+    "category": "Z3S77B56 regionale",
+    "email_club": "uaae@hotmail.com"
 }
 
 ###
-GET http://localhost:5000/teams?id=f1b218dd-203a-4bc4-b0fd-4e6712426d78
+GET http://localhost:5000/teams?id=7fe82fc1-b1f2-4de2-937b-39274c194217
 
 ###
-POST http://localhost:5000/teams/add
+PUT http://localhost:5000/teams/add
 Content-Type: application/json
 
 {
-    "player":"jeabn@matrix.com",
-    "team":"0deac8ab-af14-4363-86fd-0f5231aa4dfa"
+    "player":"jeanb@matrix.com",
+    "team":"7fe82fc1-b1f2-4de2-937b-39274c194217"
 }
 
 
 ###
-POST http://localhost:5000/teams/remove
+DELETE http://localhost:5000/teams/remove
 Content-Type: application/json
 
 {
-    "player":"jeabn@matrix.com",
-    "team":"f1b218dd-203a-4bc4-b0fd-4e6712426d78"
+    "player":"dogbdfdfbbb@front.com",
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
 }
+
+###
+PUT http://localhost:5000/teams/setCoach
+Content-Type: application/json
+
+{
+    "coach":"jeanhuguhrsg@matrix.com",
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
+}
+
+
+###
+GET http://localhost:5000/teams/getCoach
+Content-Type: application/json
+
+{
+    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
+}
+
+###
+PUT http://localhost:5000/teams/updateCategory
+Content-Type: application/json
+
+{
+    "team":"9cf78f80-59b2-41ce-b150-90c707861b08",
+    "category":"P2 regionale"
+}
+
+### 
+GET http://localhost:5000/teams/teamsPlayer?id_team=7fe82fc1-b1f2-4de2-937b-39274c194217

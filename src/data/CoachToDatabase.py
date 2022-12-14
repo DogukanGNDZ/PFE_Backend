@@ -1,5 +1,6 @@
 from neo4j import GraphDatabase
 from flask import make_response
+from src.data.SportToDatabase import fetch_user_sport
 from src.dto.CoachDTO import *
 import os
 import bcrypt
@@ -33,7 +34,8 @@ def fetch_coach(id: str):
         result = session.run(
             'MATCH (co:Coach) WHERE co.id = $id RETURN co', id=id)
 
-        if(not result.peek()): return None
+        if (not result.peek()):
+            return None
 
         coach = result.single().data()['co']
         coach.pop('password', None)
@@ -51,7 +53,10 @@ def fetch_all_coachs():
         for coach in result:
             co = coach.data()['co']
             co.pop('password', None)
+            #sport = fetch_user_sport("coach", co["email"])
             coachs.append(co)
+            # if (len(sport) > 0):
+            #    coachs.append(sport[0])
 
         # Return the result of the query
         return coachs
@@ -59,8 +64,6 @@ def fetch_all_coachs():
 
 def apply_for_club_coach(email_coach: str, email_club: str):
     with graph.session() as session:
-        print(email_coach)
-        print(email_club)
         session.run(
             'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_coach, name=email_club)
         session.run(
@@ -87,7 +90,8 @@ def leave_club(email_coach: str, email_club: str):
         result = session.run(
             'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r return p', name=email_coach, email=email_club)
 
-        if(not result.peek()): return False
+        if (not result.peek()):
+            return False
         return True
 
 
@@ -103,16 +107,16 @@ def is_member(email_coach: str):
 
 def update_coach(coach_dto: CoachDTO):
     with graph.session() as session:
-        print("data")
         result = session.run(
-            'MATCH (u:Coach) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
+            'MATCH (u:Coach) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.number_year_experience = $nYE, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=coach_dto.email,
             firstname=coach_dto.firstname,
             lastname=coach_dto.lastname,
             age=coach_dto.age,
             nYE=coach_dto.number_year_experience,
             description=coach_dto.description,
-            picture=coach_dto.picture)
+            picture=coach_dto.picture,
+            picture_banner=coach_dto.picture_banner)
 
         if (not result.peek()):
             return None

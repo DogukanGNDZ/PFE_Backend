@@ -5,6 +5,7 @@ import os
 import bcrypt
 import json
 from dotenv import load_dotenv
+from src.data.SportToDatabase import fetch_user_sport
 from dataclasses import asdict
 
 load_dotenv()
@@ -58,8 +59,10 @@ def fetch_all_clubs():
             date_str = c["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
             c["creation_date"] = json.dumps(date_str)
             c.pop('password', None)
+            #sport = fetch_user_sport("club", c["email"])
             clubs.append(c)
-
+            # if (len(sport) > 0):
+            #    clubs.append(sport[0])
         # Return the result of the query
         return clubs
 
@@ -104,6 +107,16 @@ def accept_new_member(email_club: str, email_member: str, role: str):
                 'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
             session.run(
                 'MATCH (u:Coach) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:COACH_OF]->(c)', email=email_member, name=email_club)
+
+
+def refuse_member(email_club: str, email_member: str, role: str):
+    with graph.session() as session:
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+        else:
+            session.run(
+                'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
 
 
 def get_all_players(email_club: str):
@@ -156,7 +169,6 @@ def get_team_clubs(email_club: str):
         result = session.run(
             'MATCH (t:Team)-[r:TEAM_DE]->(c:Club) WHERE c.email = $name return t', name=email_club)
         teams = []
-
         for team in result:
             t = team.data()['t']
             teams.append(t)
@@ -167,11 +179,12 @@ def get_team_clubs(email_club: str):
 def update_club(club_dto: ClubDTO):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:Club) WHERE u.email = $email SET u.name = $name, u.description = $description, u.picture = $picture RETURN u',
+            'MATCH (u:Club) WHERE u.email = $email SET u.name = $name, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=club_dto.email,
             name=club_dto.name,
             description=club_dto.description,
-            picture=club_dto.picture)
+            picture=club_dto.picture,
+            picture_banner=club_dto.picture_banner)
 
         if (not result.peek()):
             return None

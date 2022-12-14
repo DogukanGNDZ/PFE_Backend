@@ -55,21 +55,73 @@ def fetch_all_teams():
         return teams
 
 
-def add(team_id: str, email: str):
+def add_player(team_id: str, email: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (u:User), (t:Team) WHERE u.email = $email AND t.id = $team_id CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
+            'MATCH (u:User), (t:Team) WHERE NOT (u)-[:CONSTITUE]->(t) AND u.email = $email AND t.id = $team_id SET t.number_players = t.number_players+1 CREATE (u)-[r:CONSTITUE]->(t) RETURN u, t, r', email=email, team_id=team_id)
 
         if (result.peek()):
             return True
-        else:
-            return False
+        return False
 
 
-def remove(team_id: str, email: str):
+def remove_player(team_id: str, email: str):
     with graph.session() as session:
-        result = session.run('MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email AND t.id = $team_id DELETE r RETURN u, t', email = email, team_id = team_id)
-        
-        if(result.peek()): return True
-        else: return False
+        result = session.run(
+            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE u.email = $email  AND t.id = $team_id SET t.number_players = t.number_players-1 DELETE r RETURN u, t', email=email, team_id=team_id)
 
+        if (result.peek()):
+            return True
+        return False
+
+
+def add_coach(team_id: str, email: str):
+    with graph.session() as session:
+        session.run(
+            'MATCH (c:Coach)-[r:ENTRAINE]->(t:Team) WHERE c.email = $email AND t.team_id = $team_id DELETE r RETURN c, t', email=email, team_id=team_id
+        )
+        result = session.run(
+            'MATCH (c:Coach), (t:Team) WHERE c.email = $email AND t.id = $team_id CREATE (c)-[r:ENTRAINE]->(t) RETURN c, r, t', email=email, team_id=team_id
+        )
+        if (not result.peek()):
+            return False
+        return True
+
+
+def fetch_coach(team_id: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (c:Coach)-[r:ENTRAINE]->(t:Team) WHERE t.id = $team_id RETURN c', team_id=team_id
+        )
+        if (not result.peek()):
+            return None
+
+        coach = result.single().data()["c"]
+        coach.pop("password", None)
+
+        return coach
+
+
+def update_category_data(team_id: str, new_category: str):
+    with graph.session() as session:
+        result = session.run('MATCH (t:Team) WHERE t.id = $team_id SET t.category = $new_category RETURN t',
+                             team_id=team_id, new_category=new_category)
+        if (not result.peek()):
+            return None
+
+        team = result.single().data()['t']
+
+        # Return the result of the query
+        return team
+
+
+def get_team_player_data(team_id: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (u:User)-[r:CONSTITUE]->(t:Team) WHERE t.id = $team_id RETURN u', team_id=team_id)
+        users = []
+        for user in result:
+            u = user.data()['u']
+            u.pop('password', None)
+            users.append(u)
+        return users

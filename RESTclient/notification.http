@@ -11,7 +11,7 @@ Content-Type: application/json
 GET http://localhost:5000/notifications
 
 ### 
-GET http://localhost:5000/notifications/getNotifications?email_user=jean@matrix.com
+GET http://localhost:5000/notifications/getNotifications?email_user=jerome1@gmail.com
 
 ###
 #delete all notif CAREFULL!!!!

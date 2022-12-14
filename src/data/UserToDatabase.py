@@ -1,6 +1,7 @@
 import json
 from flask import make_response
 from neo4j import GraphDatabase
+from src.data.SportToDatabase import fetch_user_sport
 from src.dto.UserDTO import *
 import os
 import bcrypt
@@ -35,13 +36,29 @@ def fetch_user(id: str):
     with graph.session() as session:
         result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
 
-        if (not result.peek()):
-            return None
-        user = result.single().data()['u']
-        user.pop('password', None)
-
-        # Return the result of the query
-        return user
+        if (result.peek()):
+            user = result.single().data()['u']
+            user.pop('password', None)
+            return user
+        else:
+            result = session.run(
+                'MATCH (c:Coach) WHERE c.id = $id RETURN c', id=id)
+            if (result.peek()):
+                coach = result.single().data()['c']
+                coach.pop('password', None)
+                return coach
+            else:
+                result = session.run(
+                    'MATCH (cl:Club) WHERE cl.id = $id RETURN cl', id=id)
+                if (result.peek()):
+                    club = result.single().data()['cl']
+                    date_str = club["creation_date"].strftime(
+                        '%Y-%m-%d %H:%M:%S')
+                    club["creation_date"] = json.dumps(date_str)
+                    club.pop('password', None)
+                    return club
+                else:
+                    return None
 
 
 def fetch_user_email(email: str):
@@ -112,7 +129,10 @@ def fetch_all_users():
         for user in result:
             u = user.data()['u']
             u.pop('password', None)
+            #sport = fetch_user_sport("player", u["email"])
             users.append(u)
+            # if (len(sport) > 0):
+            #    users.append(sport[0])
 
         # Return the result of the query
         return users
@@ -145,7 +165,7 @@ def update_user(user_dto: UserDTO):
     with graph.session() as session:
         print("data")
         result = session.run(
-            'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture RETURN u',
+            'MATCH (u:User) WHERE u.email = $email SET u.firstname = $firstname, u.lastname = $lastname, u.age = $age,u.size = $size, u.weight = $weight, u.post = $post, u.number_year_experience = $nYE, u.description = $description, u.picture = $picture, u.picture_banner = $picture_banner RETURN u',
             email=user_dto.email,
             firstname=user_dto.firstname,
             lastname=user_dto.lastname,
@@ -155,7 +175,8 @@ def update_user(user_dto: UserDTO):
             post=user_dto.post,
             nYE=user_dto.number_year_experience,
             description=user_dto.description,
-            picture=user_dto.picture)
+            picture=user_dto.picture,
+            picture_banner=user_dto.picture_banner)
 
         if (not result.peek()):
             return None

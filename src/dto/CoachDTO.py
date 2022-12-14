@@ -12,3 +12,4 @@ class CoachDTO:
     number_year_experience: int
     description: str
     picture: str
+    picture_banner: str

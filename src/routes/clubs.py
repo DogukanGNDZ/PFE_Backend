@@ -23,8 +23,9 @@ def generate_id():
 
 
 @clubs_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_clubs():
-    id = request.args.get("id", default=1, type=int)
+    id = request.args.get("id", default=1, type=str)
     if (id == 1):
         return fetch_all_clubs()
 
@@ -43,7 +44,7 @@ def register():
     name = request.json.get('name')
     email = request.json.get('email')
     club = ClubDTO(generate_id(), name, email, pwd_hash,
-                   "", 0, datetime.datetime.now(), "")
+                   "", 0, datetime.datetime.now(), "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
@@ -85,6 +86,19 @@ def accept_member():
     return "Member accepted"
 
 
+@clubs_bp.route("/refuseNewMember", methods=["POST"])
+@cross_origin()
+def refuse_new_member():
+    email_member = request.json.get('email_member')
+    role = get_role(email_member)
+    email_club = request.json.get('email_club')
+    refuse_member(email_club, email_member, role)
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez été refusé par un club. Email club : " + email_club, datetime.datetime.now(), "active")
+    create_notification_data(notification_user, role, email_member)
+    return "Member refused"
+
+
 @clubs_bp.route("/removeMember", methods=["DELETE"])
 @cross_origin()
 def remove_member_club():
@@ -117,13 +131,14 @@ def update_data_coach():
     email = request.json.get('email')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    picture_banner = request.json.get('picture_banner')
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = ClubDTO(0, name, email,
-                   "", description, 0, datetime.datetime.now(), picture)
+                   "", description, 0, datetime.datetime.now(), picture, picture_banner)
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(
@@ -131,3 +146,10 @@ def update_data_coach():
         create_notification_data(notification_user, "club", email)
         return make_response(user, 200)
     return make_response("User not found", 404)
+
+
+@clubs_bp.route("/getTeamsClub", methods=["GET"])
+@cross_origin()
+def get_team_club():
+    email = request.args.get("email", default="", type=str)
+    return get_team_clubs(email)

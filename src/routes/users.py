@@ -4,6 +4,10 @@ from azure.storage.blob import BlobServiceClient
 from src.dto.UserDTO import *
 from src.dto.NotificationDTO import *
 from src.data.UserToDatabase import *
+from src.data.CoachToDatabase import update_coach
+from src.data.ClubToDatabase import update_club
+from src.dto.CoachDTO import *
+from src.dto.ClubDTO import *
 from src.data.AdressToDatabase import fetch_user_adress
 from src.data.NotificationToDatabase import create_notification_data
 from src.routes.auth import authorize, get_role
@@ -62,7 +66,7 @@ def register():
     email = request.json.get('email')
     role = request.json.get('role')
     user = UserDTO(generate_id(), firstname, lastname, age,
-                   email, pwd_hash, 0, 0, "", 0, "", "")
+                   email, pwd_hash, 0, 0, "", 0, "", "", "")
     if (check_mail(email)):
         return make_response("Email already use", 400)
     else:
@@ -102,13 +106,14 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = UserDTO(0, firstname, lastname, age, email, "", size,
-                   weight, post, nYE, description, picture)
+                   weight, post, nYE, description, picture, "")
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(
@@ -137,9 +142,12 @@ def apply_for_club():
     email_user = request.json.get('email_user')
     email_club = request.json.get('email_club')
     apply_for_club_user(email_user, email_club)
+    notification_player = NotificationDTO(generate_id(
+    ), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), "Nouvelle demande d'inscription : Player", datetime.datetime.now(), "active")
     create_notification_data(notification_club, "club", email_club)
+    create_notification_data(notification_player, "player", email_user)
     return "Request send"
 
 
@@ -197,7 +205,6 @@ def serach_user():
     return search_user_data(role, sport, age, country, city, name)
 
 
-
 @users_bp.route("/uploadImage", methods=["POST"])
 @cross_origin()
 def upload_image():
@@ -207,8 +214,9 @@ def upload_image():
     if claims.status_code == 498 or claims.status_code == 401:
         return make_response('Invalid Token', 498)
 
-    id=ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
-    user=fetch_user(id)
+    id = ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
+    user = fetch_user(id)
+    role = get_role(user["email"])
     image_file = request.files["image"]
 
     # Create a BlobServiceClient object to connect to your Azure Blob Storage account
@@ -221,11 +229,63 @@ def upload_image():
     container_client = blob_service_client.get_container_client(container_name)
 
     # Upload the image file to the container
-    
+
     blob_name = image_file.filename+generate_id()+".png"
-    userd=UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                   user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name)
-    update_user(userd)
+    if (role == "player"):
+        userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name,"")
+        update_user(userd)
+    elif (role == "coach"):
+        coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
+                          user["number_year_experience"], user["description"], blob_name, user["picture_banner"])
+        update_coach(coachd)
+    else:
+        clubd = ClubDTO(0, user["name"], user["email"], "", user["description"],
+                        user["number_teams"], user["creation_date"], blob_name, user["picture_banner"])
+        update_club(clubd)
+    blob_client = container_client.upload_blob(blob_name, image_file)
+
+    return make_response("Image uploaded successfully", 200)
+
+
+@users_bp.route("/uploadImageBanner", methods=["POST"])
+@cross_origin()
+def upload_image_banner():
+    # Get the image file from the request
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+
+    id = ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
+    user = fetch_user(id)
+    role = get_role(user["email"])
+    image_file = request.files["image"]
+
+    # Create a BlobServiceClient object to connect to your Azure Blob Storage account
+
+    blob_service_client = BlobServiceClient.from_connection_string(
+        conn_str=KEYAZURE
+    )
+    # Create a container in your Azure Blob Storage account
+    container_name = "imagess"
+    container_client = blob_service_client.get_container_client(container_name)
+
+    # Upload the image file to the container
+
+    blob_name = image_file.filename+generate_id()+".png"
+    if (role == "player"):
+        userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], user["picture"], blob_name)
+        update_user(userd)
+    elif (role == "coach"):
+        coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
+                          user["number_year_experience"], user["description"], user["picture"], blob_name)
+        update_coach(coachd)
+    else:
+        clubd = ClubDTO(0, user["name"], user["email"], "", user["description"],
+                        user["number_teams"], user["creation_date"], user["picture"], blob_name)
+        update_club(clubd)
     blob_client = container_client.upload_blob(blob_name, image_file)
 
     return make_response("Image uploaded successfully", 200)

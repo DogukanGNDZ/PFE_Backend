@@ -10,12 +10,13 @@ teams_bp = Blueprint("teams", __name__, url_prefix="/teams")
 
 @teams_bp.route("", methods=["GET"])
 def get_all_teams():
-    id = request.args.get("id", default=1, type=int)
+    id = request.args.get("id", default=1, type=str)
     if (id == 1):
         return fetch_all_teams()
 
     team = fetch_team(id)
-    if(team is not None): return make_response(team, 200)
+    if (team is not None):
+        return make_response(team, 200)
     return make_response("Team not found", 404)
 # generate a new id
 
@@ -34,26 +35,70 @@ def create():
     return create_team(team, email_club)
 
 
-@teams_bp.route("/add", methods=["POST"])
+@teams_bp.route("/add", methods=["PUT"])
 @cross_origin()
-def add_player():
+def put_player():
 
     player = request.json.get('player')
     team = request.json.get('team')
 
-    if (add(team, player)):
+    if (add_player(team, player)):
         return make_response("", 200)
     else:
         return make_response("", 404)
 
 
-@teams_bp.route("/remove", methods=["POST"])
+@teams_bp.route("/remove", methods=["DELETE"])
 @cross_origin()
-def remove_player():
+def delete_player():
 
     player = request.json.get('player')
     team = request.json.get('team')
 
-    if (remove(team, player)):
+    if (remove_player(team, player)):
         return make_response("", 200)
     return make_response("", 404)
+
+
+@teams_bp.route("/setCoach", methods=["PUT"])
+@cross_origin()
+def put_coach():
+
+    coach = request.json.get('coach')
+    team = request.json.get('team')
+
+    if (add_coach(team, coach)):
+        return make_response("", 200)
+    return make_response("", 404)
+
+
+@teams_bp.route("/getCoach", methods=["GET"])
+@cross_origin()
+def get_coach():
+
+    team = request.json.get('team')
+
+    coach = fetch_coach(team)
+
+    if (coach is not None):
+        return make_response(coach, 200)
+    return make_response("", 404)
+
+
+@teams_bp.route("/updateCategory", methods=["PUT"])
+@cross_origin()
+def update_category():
+    team = request.json.get('team')
+    category = request.json.get('category')
+    team = update_category_data(team, category)
+
+    if (team is not None):
+        return make_response(team, 200)
+    return make_response("", 404)
+
+
+@teams_bp.route("/teamsPlayer", methods=["GET"])
+@cross_origin()
+def get_players_team():
+    id = request.args.get("id_team", default="", type=str)
+    return get_team_player_data(id)
