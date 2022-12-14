@@ -4,6 +4,10 @@ from azure.storage.blob import BlobServiceClient
 from src.dto.UserDTO import *
 from src.dto.NotificationDTO import *
 from src.data.UserToDatabase import *
+from src.data.CoachToDatabase import update_coach
+from src.data.ClubToDatabase import update_club
+from src.dto.CoachDTO import *
+from src.dto.ClubDTO import *
 from src.data.AdressToDatabase import fetch_user_adress
 from src.data.NotificationToDatabase import create_notification_data
 from src.routes.auth import authorize, get_role
@@ -209,6 +213,7 @@ def upload_image():
 
     id = ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
     user = fetch_user(id)
+    role = get_role(user["email"])
     image_file = request.files["image"]
 
     # Create a BlobServiceClient object to connect to your Azure Blob Storage account
@@ -223,9 +228,61 @@ def upload_image():
     # Upload the image file to the container
 
     blob_name = image_file.filename+generate_id()+".png"
-    userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                    user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name)
-    update_user(userd)
+    if (role == "palyer"):
+        userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name, user["picture_banner"])
+        update_user(userd)
+    elif (role == "coach"):
+        coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
+                          user["number_year_experience"], user["description"], blob_name, user["picture_banner"])
+        update_coach(coachd)
+    else:
+        clubd = ClubDTO(0, user["name"], user["email"], "", user["description"],
+                        user["number_teams"], user["creation_date"], blob_name, user["picture_banner"])
+        update_club(clubd)
+    blob_client = container_client.upload_blob(blob_name, image_file)
+
+    return make_response("Image uploaded successfully", 200)
+
+
+@users_bp.route("/uploadImageBanner", methods=["POST"])
+@cross_origin()
+def upload_image():
+    # Get the image file from the request
+    token = request.headers.get('Authorize')
+    claims = authorize(token)
+    if claims.status_code == 498 or claims.status_code == 401:
+        return make_response('Invalid Token', 498)
+
+    id = ast.literal_eval(claims.data.decode('utf-8'))["user_id"]
+    user = fetch_user(id)
+    role = get_role(user["email"])
+    image_file = request.files["image"]
+
+    # Create a BlobServiceClient object to connect to your Azure Blob Storage account
+
+    blob_service_client = BlobServiceClient.from_connection_string(
+        conn_str=KEYAZURE
+    )
+    # Create a container in your Azure Blob Storage account
+    container_name = "imagess"
+    container_client = blob_service_client.get_container_client(container_name)
+
+    # Upload the image file to the container
+
+    blob_name = image_file.filename+generate_id()+".png"
+    if (role == "palyer"):
+        userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], user["picture"], blob_name)
+        update_user(userd)
+    elif (role == "coach"):
+        coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
+                          user["number_year_experience"], user["description"], user["picture"], blob_name)
+        update_coach(coachd)
+    else:
+        clubd = ClubDTO(0, user["name"], user["email"], "", user["description"],
+                        user["number_teams"], user["creation_date"], user["picture"], blob_name)
+        update_club(clubd)
     blob_client = container_client.upload_blob(blob_name, image_file)
 
     return make_response("Image uploaded successfully", 200)
