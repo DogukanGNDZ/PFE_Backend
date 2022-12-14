@@ -5,6 +5,7 @@ import os
 import bcrypt
 import json
 from dotenv import load_dotenv
+from src.data.SportToDatabase import fetch_user_sport
 from dataclasses import asdict
 
 load_dotenv()
@@ -58,8 +59,9 @@ def fetch_all_clubs():
             date_str = c["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
             c["creation_date"] = json.dumps(date_str)
             c.pop('password', None)
+            sport = fetch_user_sport("club", c["email"])
             clubs.append(c)
-
+            clubs.append(sport)
         # Return the result of the query
         return clubs
 
