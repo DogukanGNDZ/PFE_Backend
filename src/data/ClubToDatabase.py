@@ -70,27 +70,30 @@ def fetch_all_clubs():
 def get_all_request_join_users(email_club: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE c.email = $name return p', name=email_club)
-
+            'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE c.email = $name RETURN p,t', name=email_club)
         users = []
         for user in result:
             u = user.data()['p']
+            t = user.data()['t']
             u.pop('password', None)
             users.append(u)
+            users.append(t)
         return users
 
 
 def get_all_request_join_coach(email_club: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE c.email = $name return p', name=email_club)
+            'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE c.email = $name RETURN p,t', name=email_club)
 
         coachs = []
 
         for coach in result:
             c = coach.data()['p']
+            t = coach.data()['t']
             c.pop('password', None)
             coachs.append(c)
+            coachs.append(t)
 
         return coachs
 
@@ -99,30 +102,26 @@ def accept_new_member(email_club: str, email_member: str, role: str):
     with graph.session() as session:
         if (role == "player"):
             session.run(
-                'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
-            session.run(
-                'MATCH (u:User) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:PLAYER_OF]->(c)', email=email_member, name=email_club)
+                'MATCH (u:User)-[rel:APPLY_FOR_PLAYER]->(t:Team)-[r:TEAM_DE]->(c:Club) WHERE u.email=$email AND c.email = $name DELETE rel SET t.number_players = t.number_players+1 CREATE (u)-[ri:CONSTITUE]->(t) RETURN ri,t,u', email=email_member, name=email_club)
         else:
             session.run(
-                'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
-            session.run(
-                'MATCH (u:Coach) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:COACH_OF]->(c)', email=email_member, name=email_club)
+                'MATCH (u:Coach)-[rel:APPLY_FOR_COACH]->(t:Team)-[r:TEAM_DE]->(c:Club) WHERE u.email=$email AND c.email = $name DELETE rel CREATE (u)-[ri:ENTRAINE]->(t) RETURN ri,t,u', email=email_member, name=email_club)
 
 
 def refuse_member(email_club: str, email_member: str, role: str):
     with graph.session() as session:
         if (role == "player"):
             session.run(
-                'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+                'MATCH (u:User)-[rel:APPLY_FOR_PLAYER]->(t:Team)-[r:TEAM_DE]->(c:Club) WHERE u.email=$email AND c.email = $name DELETE rel', email=email_member, name=email_club)
         else:
             session.run(
-                'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+                'MATCH (u:Coach)-[rel:APPLY_FOR_COACH]->(t:Team)-[r:TEAM_DE]->(c:Club) WHERE u.email=$email AND c.email = $name DELETE rel', email=email_member, name=email_club)
 
 
 def get_all_players(email_club: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE c.email = $name return p', name=email_club)
+            'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE c.email = $name return p', name=email_club)
 
         users = []
 
@@ -137,7 +136,7 @@ def get_all_players(email_club: str):
 def get_all_coachs(email_club: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE c.email = $name return p', name=email_club)
+            'MATCH (p:Coach)-[r:ENTRAINE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE c.email = $name return p', name=email_club)
 
         coachs = []
 
@@ -153,10 +152,10 @@ def remove_member(email_club: str, email_member: str, role: str):
     with graph.session() as session:
         if (role == "player"):
             session.run(
-                'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+                'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
         else:
             session.run(
-                'MATCH (p:Coach)-[r:COACH_OF]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+                'MATCH (p:Coach)-[r:ENTRAINE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
 
 
 def remove_all_clubs():
@@ -194,4 +193,17 @@ def update_club(club_dto: ClubDTO):
         club.pop('password', None)
 
         # Return the result of the query
+        return club
+
+
+def get_club_with_team(id_team: str):
+    with graph.session() as session:
+        result = session.run(
+            'MATCH (t:Team)-[r:TEAM_DE]->(c:Club) WHERE t.id = $name return c', name=id_team)
+        if (not result.peek()):
+            return None
+        club = result.single().data()['c']
+        date_str = club["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+        club["creation_date"] = json.dumps(date_str)
+        club.pop('password', None)
         return club

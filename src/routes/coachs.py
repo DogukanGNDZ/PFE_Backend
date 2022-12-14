@@ -1,6 +1,7 @@
 import datetime
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
+from src.data.ClubToDatabase import get_club_with_team
 from src.data.NotificationToDatabase import create_notification_data
 from src.dto.NotificationDTO import NotificationDTO
 
@@ -59,14 +60,15 @@ def register():
 def apply_for_club():
     email_coach = request.json.get('email_coach')
     email_club = request.json.get('email_club')
-    apply_for_club_coach(email_coach, email_club)
-
+    id_team = request.json.get('id_team')
+    apply_for_club_coach(email_coach, email_club, id_team)
+    club = get_club_with_team(id_team)
     notification_coach = NotificationDTO(
-        generate_id(), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
+        generate_id(), "Vous avez bien postulez pour une team", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), "Nouvelle demande d'inscription : Coach", datetime.datetime.now(), "active")
 
-    create_notification_data(notification_club, "club", email_club)
+    create_notification_data(notification_club, "club", club["email"])
     create_notification_data(notification_coach, "coach", email_coach)
 
     return "Request send"

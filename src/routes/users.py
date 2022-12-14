@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_cors import cross_origin
 from azure.storage.blob import BlobServiceClient
+from src.data.ClubToDatabase import get_club_with_team
 from src.dto.UserDTO import *
 from src.dto.NotificationDTO import *
 from src.data.UserToDatabase import *
@@ -106,7 +107,6 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
-    
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
@@ -141,12 +141,14 @@ def get_adress_user():
 def apply_for_club():
     email_user = request.json.get('email_user')
     email_club = request.json.get('email_club')
-    apply_for_club_user(email_user, email_club)
+    id_team = request.json.get('id_team')
+    club = get_club_with_team(id_team)
+    apply_for_club_user(email_user, email_club, id_team)
     notification_player = NotificationDTO(generate_id(
     ), "Vous avez bien postulez pour un club", datetime.datetime.now(), "active")
     notification_club = NotificationDTO(
         generate_id(), "Nouvelle demande d'inscription : Player", datetime.datetime.now(), "active")
-    create_notification_data(notification_club, "club", email_club)
+    create_notification_data(notification_club, "club", club["email"])
     create_notification_data(notification_player, "player", email_user)
     return "Request send"
 
@@ -233,7 +235,7 @@ def upload_image():
     blob_name = image_file.filename+generate_id()+".png"
     if (role == "player"):
         userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name,"")
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name, "")
         update_user(userd)
     elif (role == "coach"):
         coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",

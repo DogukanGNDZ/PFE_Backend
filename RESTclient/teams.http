@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
     "category": "Z3S77B56 regionale",
-    "email_club": "uaae@hotmail.com"
+    "email_club": "k@k.com"
 }
 
 ###
-GET http://localhost:5000/teams?id=7fe82fc1-b1f2-4de2-937b-39274c194217
+GET http://localhost:5000/teams?id=159aef98-aaf0-48e2-8794-5ed4499c0d1c
 
 ###
 PUT http://localhost:5000/teams/add

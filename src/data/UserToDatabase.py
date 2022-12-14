@@ -129,7 +129,7 @@ def fetch_all_users():
         for user in result:
             u = user.data()['u']
             u.pop('password', None)
-            #sport = fetch_user_sport("player", u["email"])
+            # sport = fetch_user_sport("player", u["email"])
             users.append(u)
             # if (len(sport) > 0):
             #    users.append(sport[0])
@@ -187,19 +187,18 @@ def update_user(user_dto: UserDTO):
         return user
 
 
-def apply_for_club_user(email_user: str, email_club: str):
+def apply_for_club_user(email_user: str, email_club: str, id_team: str):
     with graph.session() as session:
-
         session.run(
-            'MATCH (u:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE u.email= $email AND c.email = $name DELETE r', email=email_user, name=email_club)
+            'MATCH(u:User)-[r:APPLY_FOR_PLAYER]->(t:Team) WHERE u.email= $email AND t.id = $name DELETE r', email=email_user, name=id_team)
         session.run(
-            'MATCH (u:User), (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[r:APPLY_FOR_PLAYER]->(c) RETURN u,c,r', email=email_user, name=email_club)
+            'MATCH (t:Team),(u:User) WHERE t.id = $id AND u.email= $email CREATE (u)-[r:APPLY_FOR_PLAYER]->(t) RETURN u,r,t', email=email_user, id=id_team)
 
 
 def get_user_club(email_user: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name return c', name=email_user)
+            'MATCH (p:User)-[r:PLAYER_OF]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email = $name return c', name=email_user)
 
         clubs = []
 
@@ -231,15 +230,13 @@ def get_user_sport(email_user: str):
 def leave_club(email_user: str, email_club: str):
     with graph.session() as session:
         session.run(
-            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name AND c.email = $email DELETE r', name=email_user, email=email_club)
-        session.run(
-            'MATCH (p:User)-[r:CONSTITUE]->(t:Team) WHERE p.email = $email DELETE r', email=email_user)
+            'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email = $email AND c.email = $name DELETE r', email=email_user, name=email_club)
 
 
 def is_member(email_user: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:User)-[r:PLAYER_OF]->(c:Club) WHERE p.email = $name RETURN COUNT(r)>0 AS d', name=email_user)
+            'MATCH (p:User)-[r:PLAYER_OF]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email = $name RETURN COUNT(r)>0 AS d', name=email_user)
 
         if (not result.peek()):
             return None

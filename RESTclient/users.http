@@ -82,8 +82,9 @@ POST http://localhost:5000/users/applyClub
 Content-Type: application/json
 
 {
-    "email_user": "jeabn@matrix.com",
-    "email_club" : "jeab@matrix.com"
+    "email_user": "lbj@hotmail.com",
+    "email_club" : "k@k.com",
+    "id_team": "159aef98-aaf0-48e2-8794-5ed4499c0d1c"
 }
 
 ###
