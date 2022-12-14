@@ -107,13 +107,14 @@ def update_data_user():
     nYE = request.json.get('number_year_experience')
     description = request.json.get('description')
     picture = request.json.get('picture')
+    pict_ban = request.json.get('pict_ban')
 
     id = fetch_user_email(email)["id"]
     if ast.literal_eval(claims.data.decode('utf-8'))["user_id"] != id:
         return make_response('Not authorized', 401)
 
     user = UserDTO(0, firstname, lastname, age, email, "", size,
-                   weight, post, nYE, description, picture, "")
+                   weight, post, nYE, description, picture, pict_ban)
     user = update_user(user)
     if (user is not None):
         notification_user = NotificationDTO(
