@@ -59,10 +59,10 @@ def fetch_all_clubs():
             date_str = c["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
             c["creation_date"] = json.dumps(date_str)
             c.pop('password', None)
-            sport = fetch_user_sport("club", c["email"])
+            #sport = fetch_user_sport("club", c["email"])
             clubs.append(c)
-            if (len(sport) > 0):
-                clubs.append(sport[0])
+            # if (len(sport) > 0):
+            #    clubs.append(sport[0])
         # Return the result of the query
         return clubs
 

@@ -53,10 +53,10 @@ def fetch_all_coachs():
         for coach in result:
             co = coach.data()['co']
             co.pop('password', None)
-            sport = fetch_user_sport("coach", co["email"])
+            #sport = fetch_user_sport("coach", co["email"])
             coachs.append(co)
-            if (len(sport) > 0):
-                coachs.append(sport[0])
+            # if (len(sport) > 0):
+            #    coachs.append(sport[0])
 
         # Return the result of the query
         return coachs
