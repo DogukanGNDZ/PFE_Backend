@@ -35,13 +35,29 @@ def fetch_user(id: str):
     with graph.session() as session:
         result = session.run('MATCH (u:User) WHERE u.id = $id RETURN u', id=id)
 
-        if (not result.peek()):
-            return None
-        user = result.single().data()['u']
-        user.pop('password', None)
-
-        # Return the result of the query
-        return user
+        if (result.peek()):
+            user = result.single().data()['u']
+            user.pop('password', None)
+            return user
+        else:
+            result = session.run(
+                'MATCH (c:Coach) WHERE c.id = $id RETURN c', id=id)
+            if (result.peek()):
+                coach = result.single().data()['c']
+                coach.pop('password', None)
+                return coach
+            else:
+                result = session.run(
+                    'MATCH (cl:Club) WHERE cl.id = $id RETURN cl', id=id)
+                if (result.peek()):
+                    club = result.single().data()['cl']
+                    date_str = club["creation_date"].strftime(
+                        '%Y-%m-%d %H:%M:%S')
+                    club["creation_date"] = json.dumps(date_str)
+                    club.pop('password', None)
+                    return club
+                else:
+                    return None
 
 
 def fetch_user_email(email: str):
@@ -184,6 +200,8 @@ def get_user_club(email_user: str):
 
         for club in result:
             u = club.data()['c']
+            date_str = u["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+            u["creation_date"] = json.dumps(date_str)
             u.pop('password', None)
             clubs.append(u)
 

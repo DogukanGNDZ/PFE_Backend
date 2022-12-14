@@ -10,6 +10,7 @@ sports_bp = Blueprint("sports", __name__, url_prefix="/sports")
 
 
 @sports_bp.route("", methods=["GET"])
+@cross_origin()
 def get_all_sports():
     id = request.args.get("id", default=1, type=int)
     if (id == 1):
