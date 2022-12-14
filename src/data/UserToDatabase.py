@@ -62,7 +62,6 @@ def fetch_user(id: str):
 
 def fetch_user_email(email: str):
     with graph.session() as session:
-        print("in")
         result = session.run(
             'MATCH (u:User) WHERE u.email = $email RETURN u, COUNT(u)>0 as d', email=email)
         if (result.peek()):
@@ -77,13 +76,9 @@ def fetch_user_email(email: str):
                 coach.pop('password', None)
                 return coach
             else:
-                print("here")
                 result = session.run(
                     'MATCH (cl:Club) WHERE cl.email = $email RETURN cl', email=email)
-                print(result.peek())
-                print(email)
                 if (result.peek()):
-                    print("ya")
                     club = result.single().data()['cl']
                     date_str = club["creation_date"].strftime(
                         '%Y-%m-%d %H:%M:%S')

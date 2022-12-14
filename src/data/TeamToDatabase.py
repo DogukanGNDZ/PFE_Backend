@@ -99,8 +99,6 @@ def fetch_coach(team_id: str):
         coach = result.single().data()["c"]
         coach.pop("password", None)
 
-        print(coach)
-
         return coach
 
 

@@ -40,7 +40,6 @@ def create_notification():
 def get_user_notif():
     email_user = request.args.get("email_user", default="", type=str)
     role = get_role(email_user)
-    print(role)
     return fetch_user_notification(role, email_user)
 
 

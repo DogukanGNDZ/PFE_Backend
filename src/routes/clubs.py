@@ -139,5 +139,4 @@ def update_data_coach():
 @cross_origin()
 def get_team_club():
     email = request.args.get("email", default="", type=str)
-    print("1 : " + email)
     return get_team_clubs(email)
