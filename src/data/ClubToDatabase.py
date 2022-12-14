@@ -152,7 +152,7 @@ def remove_member(email_club: str, email_member: str, role: str):
     with graph.session() as session:
         if (role == "player"):
             session.run(
-                'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+                'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email= $email AND c.email = $name t.number_players = t.number_players-1 DELETE r', email=email_member, name=email_club)
         else:
             session.run(
                 'MATCH (p:Coach)-[r:ENTRAINE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
