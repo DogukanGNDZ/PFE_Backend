@@ -24,7 +24,7 @@ def generate_id():
 
 @clubs_bp.route("", methods=["GET"])
 def get_all_clubs():
-    id = request.args.get("id", default=1, type=int)
+    id = request.args.get("id", default="", type=str)
     if (id == 1):
         return fetch_all_clubs()
 
@@ -132,3 +132,10 @@ def update_data_coach():
         create_notification_data(notification_user, "club", email)
         return make_response(user, 200)
     return make_response("User not found", 404)
+
+
+@clubs_bp.route("/getTeamsClub", methods=["GET"])
+@cross_origin()
+def get_team_club():
+    email = request.args.get("email", default="", type=str)
+    return get_team_clubs(email)
