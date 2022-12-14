@@ -164,7 +164,8 @@ def get_club():
 @cross_origin()
 def get_sport():
     email_user = request.args.get("email_user", default="", type=str)
-    return get_user_sport(email_user)
+    role = get_role(email_user)
+    return get_user_sport(email_user, role)
 
 
 @users_bp.route("/leaveClub", methods=["DELETE"])

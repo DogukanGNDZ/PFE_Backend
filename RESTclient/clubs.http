@@ -32,7 +32,7 @@ POST  http://localhost:5000/clubs/acceptNewMember
 Content-Type: application/json
 
 {
-    "email_member" : "lbj@hotmail.com",
+    "email_member" : "messi@leo.com",
     "role" : "player",
     "email_club" : "k@k.com"
 }

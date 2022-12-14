@@ -20,7 +20,6 @@ Content-Type: application/json
 
 {
     "email_coach": "jeromeCoach@gmail.com",
-    "email_club" : "k@k.com",
     "id_team" : "159aef98-aaf0-48e2-8794-5ed4499c0d1c"
 }
 

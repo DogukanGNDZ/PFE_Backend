@@ -212,19 +212,37 @@ def get_user_club(email_user: str):
         return clubs
 
 
-def get_user_sport(email_user: str):
+def get_user_sport(email_user: str, role: str):
     with graph.session() as session:
-        result = session.run(
-            'MATCH (p:User)-[r:PRATIQUE]->(s:Sport) WHERE p.email = $name return s', name=email_user)
-
-        sports = []
-
-        for sport in result:
-            u = sport.data()['s']
-            u.pop('password', None)
-            sports.append(u)
-
-        return sports
+        if (role == "player"):
+            result = session.run(
+                'MATCH (p:User)-[r:PRATIQUE]->(s:Sport) WHERE p.email = $name return s', name=email_user)
+            sports = []
+            for sport in result:
+                u = sport.data()['s']
+                u.pop('password', None)
+                sports.append(u)
+            return sports
+        elif (role == "coach"):
+            result = session.run(
+                'MATCH (p:Coach)-[r:PRATIQUE]->(s:Sport) WHERE p.email = $name return s', name=email_user)
+            sports = []
+            for sport in result:
+                u = sport.data()['s']
+                u.pop('password', None)
+                sports.append(u)
+            return sports
+        elif (role == "club"):
+            result = session.run(
+                'MATCH (p:Club)-[r:PRATIQUE]->(s:Sport) WHERE p.email = $name return s', name=email_user)
+            sports = []
+            for sport in result:
+                u = sport.data()['s']
+                u.pop('password', None)
+                sports.append(u)
+            return sports
+        else:
+            return []
 
 
 def leave_club(email_user: str, email_club: str):

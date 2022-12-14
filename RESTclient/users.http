@@ -75,15 +75,14 @@ Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTA4NDRkZTMtMmEyO
 GET http://localhost:5000/users/adresses?email=jeabn@matrix.com
 
 ###
-GET http://localhost:5000/sports/userSport?email=jerome1@gmail.com
+GET http://localhost:5000/sports/userSport?email=h@t.com
 
 ###
 POST http://localhost:5000/users/applyClub
 Content-Type: application/json
 
 {
-    "email_user": "lbj@hotmail.com",
-    "email_club" : "k@k.com",
+    "email_user": "jeromePlayer@gmail.com",
     "id_team": "159aef98-aaf0-48e2-8794-5ed4499c0d1c"
 }
 
