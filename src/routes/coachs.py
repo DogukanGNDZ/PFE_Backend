@@ -113,6 +113,7 @@ def check_is_member():
 @coachs_bp.route("/update", methods=["PUT"])
 @cross_origin()
 def update_data_coach():
+    
     token = request.headers.get('Authorize')
     claims = authorize(token)
     if claims.status_code == 498 or claims.status_code == 401:
@@ -133,7 +134,7 @@ def update_data_coach():
 
     user = CoachDTO(0, firstname, lastname, age, email,
                     "", nYE, description, picture, picture_banner)
-    user = update_user(user)
+    user = update_coach(user)
     if (user is not None):
         notification_user = NotificationDTO(
             generate_id(), "Votre profil a bien été modifié", datetime.datetime.now(), "active")

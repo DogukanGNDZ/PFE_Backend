@@ -139,7 +139,7 @@ def update_data_coach():
 
     user = ClubDTO(0, name, email,
                    "", description, 0, datetime.datetime.now(), picture, picture_banner)
-    user = update_user(user)
+    user = update_club(user)
     if (user is not None):
         notification_user = NotificationDTO(
             generate_id(), "Votre profil a bien été modifié", datetime.datetime.now(), "active")

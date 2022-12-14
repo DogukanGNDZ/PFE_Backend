@@ -37,3 +37,19 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/coachs/isMember?email_coach=jean@matrix.com
+
+###
+PUT  http://localhost:5000/coachs/update
+Content-Type: application/json
+Authorize:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZTgyM2Y1ZDgtMjViNi00NjVkLWFhNzctMTdmZjNjZDgyZTJiIiwiZXhwIjoxNjcxMTI3NDYxfQ.Pd-HdronqNCOBG1xn6Mwp19IXhqPcAnIIuu-bsA6XxA
+
+{  
+        "firstname": "JeromeCoac",
+        "lastname": "DevauxCoac",
+        "email": "jeromeCoach@gmail.com",
+        "age": 38,
+        "number_year_experience": 0,
+        "description" : "",
+        "picture": "",
+        "picture_banner": "",
+}
