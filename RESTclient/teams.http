@@ -3,19 +3,20 @@ POST http://localhost:5000/teams/create
 Content-Type: application/json
 
 {
-    "category": "Soccer"
+    "category": "Soccer",
+    "email_club": "jeahdfushkfsfb@matrix.com"
 }
 
 ###
-GET http://localhost:5000/teams?id=e9a59261-220e-4085-9bb9-a42e95a7e354
+GET http://localhost:5000/teams?id=9cf78f80-59b2-41ce-b150-90c707861b08
 
 ###
 PUT http://localhost:5000/teams/add
 Content-Type: application/json
 
 {
-    "player":"dogbdfdfbbb@front.com",
-    "team":"e9a59261-220e-4085-9bb9-a42e95a7e354"
+    "player":"jea@matrix.com",
+    "team":"9cf78f80-59b2-41ce-b150-90c707861b08"
 }
 
 
@@ -54,3 +55,6 @@ Content-Type: application/json
     "team":"e9a59261-220e-4085-9bb9-a42e95a7e354",
     "category":"P2 regionale"
 }
+
+### 
+GET http://localhost:5000/teams/teamsPlayer?id_team=9cf78f80-59b2-41ce-b150-90c707861b08

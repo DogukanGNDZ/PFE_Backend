@@ -25,7 +25,7 @@ def generate_id():
 @clubs_bp.route("", methods=["GET"])
 @cross_origin()
 def get_all_clubs():
-    id = request.args.get("id", default="", type=str)
+    id = request.args.get("id", default=1, type=str)
     if (id == 1):
         return fetch_all_clubs()
 
@@ -139,4 +139,5 @@ def update_data_coach():
 @cross_origin()
 def get_team_club():
     email = request.args.get("email", default="", type=str)
+    print("1 : " + email)
     return get_team_clubs(email)

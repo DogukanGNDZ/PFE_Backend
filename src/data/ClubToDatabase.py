@@ -153,12 +153,15 @@ def remove_all_clubs():
 
 def get_team_clubs(email_club: str):
     with graph.session() as session:
+        print("2: " + email_club)
         result = session.run(
             'MATCH (t:Team)-[r:TEAM_DE]->(c:Club) WHERE c.email = $name return t', name=email_club)
         teams = []
-
+        print(result)
         for team in result:
+            print(team)
             t = team.data()['t']
+            print(t)
             teams.append(t)
 
         return teams

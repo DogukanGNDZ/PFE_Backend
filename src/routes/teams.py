@@ -95,3 +95,10 @@ def update_category():
     if (team is not None):
         return make_response(team, 200)
     return make_response("", 404)
+
+
+@teams_bp.route("/teamsPlayer", methods=["GET"])
+@cross_origin()
+def get_players_team():
+    id = request.args.get("id_team", default="", type=str)
+    return get_team_player_data(id)
