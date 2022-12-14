@@ -184,6 +184,8 @@ def get_user_club(email_user: str):
 
         for club in result:
             u = club.data()['c']
+            date_str = u["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+            u["creation_date"] = json.dumps(date_str)
             u.pop('password', None)
             clubs.append(u)
 
