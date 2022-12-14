@@ -3,20 +3,20 @@ POST http://localhost:5000/teams/create
 Content-Type: application/json
 
 {
-    "category": "P3",
-    "email_club": "jeahdfushkfsfb@matrix.com"
+    "category": "Z3S77B56 regionale",
+    "email_club": "uaae@hotmail.com"
 }
 
 ###
-GET http://localhost:5000/teams?id=e9e97e28-07b2-4f23-a5e4-49c23a08e2d1
+GET http://localhost:5000/teams?id=7fe82fc1-b1f2-4de2-937b-39274c194217
 
 ###
 PUT http://localhost:5000/teams/add
 Content-Type: application/json
 
 {
-    "player":"dogbdfdfbbbb@front.com",
-    "team":"e9e97e28-07b2-4f23-a5e4-49c23a08e2d1"
+    "player":"jeanb@matrix.com",
+    "team":"7fe82fc1-b1f2-4de2-937b-39274c194217"
 }
 
 
@@ -57,4 +57,4 @@ Content-Type: application/json
 }
 
 ### 
-GET http://localhost:5000/teams/teamsPlayer?id_team=9cf78f80-59b2-41ce-b150-90c707861b08
+GET http://localhost:5000/teams/teamsPlayer?id_team=7fe82fc1-b1f2-4de2-937b-39274c194217

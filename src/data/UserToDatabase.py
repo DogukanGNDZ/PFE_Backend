@@ -1,6 +1,7 @@
 import json
 from flask import make_response
 from neo4j import GraphDatabase
+from src.data.SportToDatabase import fetch_user_sport
 from src.dto.UserDTO import *
 import os
 import bcrypt
@@ -128,8 +129,9 @@ def fetch_all_users():
         for user in result:
             u = user.data()['u']
             u.pop('password', None)
+            sport = fetch_user_sport("player", u["email"])
             users.append(u)
-
+            users.append(sport)
         # Return the result of the query
         return users
 

@@ -86,6 +86,19 @@ def accept_member():
     return "Member accepted"
 
 
+@clubs_bp.route("/refuseNewMember", methods=["POST"])
+@cross_origin()
+def refuse_new_member():
+    email_member = request.json.get('email_member')
+    role = get_role(email_member)
+    email_club = request.json.get('email_club')
+    refuse_member(email_club, email_member, role)
+    notification_user = NotificationDTO(
+        generate_id(), "Vous avez été refusé par un club. Email club : " + email_club, datetime.datetime.now(), "active")
+    create_notification_data(notification_user, role, email_member)
+    return "Member refused"
+
+
 @clubs_bp.route("/removeMember", methods=["DELETE"])
 @cross_origin()
 def remove_member_club():

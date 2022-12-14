@@ -1,5 +1,6 @@
 from neo4j import GraphDatabase
 from flask import make_response
+from src.data.SportToDatabase import fetch_user_sport
 from src.dto.CoachDTO import *
 import os
 import bcrypt
@@ -52,7 +53,9 @@ def fetch_all_coachs():
         for coach in result:
             co = coach.data()['co']
             co.pop('password', None)
+            sport = fetch_user_sport("coach", co["email"])
             coachs.append(co)
+            coachs.append(sport)
 
         # Return the result of the query
         return coachs

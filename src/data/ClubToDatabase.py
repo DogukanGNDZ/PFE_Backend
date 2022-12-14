@@ -108,6 +108,16 @@ def accept_new_member(email_club: str, email_member: str, role: str):
                 'MATCH (u:Coach) MATCH (c:Club) WHERE u.email= $email AND c.email = $name CREATE (u)-[rel:COACH_OF]->(c)', email=email_member, name=email_club)
 
 
+def refuse_member(email_club: str, email_member: str, role: str):
+    with graph.session() as session:
+        if (role == "player"):
+            session.run(
+                'MATCH (p:User)-[r:APPLY_FOR_PLAYER]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+        else:
+            session.run(
+                'MATCH (p:Coach)-[r:APPLY_FOR_COACH]->(c:Club) WHERE p.email= $email AND c.email = $name DELETE r', email=email_member, name=email_club)
+
+
 def get_all_players(email_club: str):
     with graph.session() as session:
         result = session.run(
