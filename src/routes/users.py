@@ -236,7 +236,7 @@ def upload_image():
     blob_name = image_file.filename+generate_id()+".png"
     if (role == "player"):
         userd = UserDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "", user["size"],
-                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name, "")
+                        user["weight"], user["post"], user["number_year_experience"], user["description"], blob_name, user["picture_banner"])
         update_user(userd)
     elif (role == "coach"):
         coachd = CoachDTO(0, user["firstname"], user["lastname"], user["age"], user["email"], "",
