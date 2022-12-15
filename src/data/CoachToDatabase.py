@@ -1,3 +1,4 @@
+import json
 from neo4j import GraphDatabase
 from flask import make_response
 from src.data.SportToDatabase import fetch_user_sport
@@ -80,6 +81,8 @@ def get_coach_club(email_user: str):
         for club in result:
             u = club.data()['c']
             u.pop('password', None)
+            date_str = u["creation_date"].strftime('%Y-%m-%d %H:%M:%S')
+            u["creation_date"] = json.dumps(date_str)
             clubs.append(u)
 
         return clubs
