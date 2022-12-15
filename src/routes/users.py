@@ -244,7 +244,7 @@ def upload_image():
         update_coach(coachd)
     else:
         clubd = ClubDTO(0, user["name"], user["email"], "", user["description"],
-                        user["number_teams"], user["creation_date"], blob_name, user["picture_banner"])
+                        user["number_teams"], user["creation_date"], blob_name, "")
         update_club(clubd)
     blob_client = container_client.upload_blob(blob_name, image_file)
 
