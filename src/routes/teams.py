@@ -76,7 +76,7 @@ def put_coach():
 @cross_origin()
 def get_coach():
 
-    team = request.json.get('team')
+    team = request.args.get("id_team", default="", type=str)
 
     coach = fetch_coach(team)
 
@@ -85,8 +85,8 @@ def get_coach():
     return make_response("", 404)
 
 
-@teams_bp.route("/updateCategory", methods=["PUT"])
-@cross_origin()
+@ teams_bp.route("/updateCategory", methods=["PUT"])
+@ cross_origin()
 def update_category():
     team = request.json.get('team')
     category = request.json.get('category')
@@ -97,8 +97,8 @@ def update_category():
     return make_response("", 404)
 
 
-@teams_bp.route("/teamsPlayer", methods=["GET"])
-@cross_origin()
+@ teams_bp.route("/teamsPlayer", methods=["GET"])
+@ cross_origin()
 def get_players_team():
     id = request.args.get("id_team", default="", type=str)
     return get_team_player_data(id)
