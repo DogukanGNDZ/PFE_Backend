@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/clubs/members?email_club=k@k.com&role=player
+GET http://localhost:5000/clubs/members?email_club=solary1@gmail.com&role=player
 
 ###
 GET http://localhost:5000/clubs/members?email_club=k@k.com&role=coach
@@ -57,3 +57,12 @@ DELETE http://localhost:5000/clubs/removeAllClubs
 
 ###
 GET http://localhost:5000/clubs/getTeamsClub?email=uaae@hotmail.com
+
+###
+POST http://localhost:5000/clubs/refuseNewMember
+Content-Type: application/json
+
+{
+    "email_member" : "lbj@hotmail.com",
+    "email_club" : "k@k.com"
+}

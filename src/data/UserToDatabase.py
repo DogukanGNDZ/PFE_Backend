@@ -198,7 +198,7 @@ def apply_for_club_user(email_user: str, id_team: str):
 def get_user_club(email_user: str):
     with graph.session() as session:
         result = session.run(
-            'MATCH (p:User)-[r:PLAYER_OF]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email = $name return c', name=email_user)
+            'MATCH (p:User)-[r:CONSTITUE]->(t:Team)-[rel:TEAM_DE]->(c:Club) WHERE p.email = $name return c', name=email_user)
 
         clubs = []
 
