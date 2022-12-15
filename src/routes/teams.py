@@ -82,7 +82,7 @@ def get_coach():
 
     if (coach is not None):
         return make_response(coach, 200)
-    return make_response("", 404)
+    return make_response("Pas coach", 200)
 
 
 @ teams_bp.route("/updateCategory", methods=["PUT"])
